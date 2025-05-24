@@ -16,7 +16,7 @@ public class VentanaTipoProducto extends Frame {
         this.ventanaAnterior = ventanaAnterior;
 
         setTitle("Tipo de Producto");
-        setSize(400, 300);
+        setSize(500, 500);
         setLocationRelativeTo(null);
         setBackground(new Color(245, 245, 245));
         setLayout(new BorderLayout(10, 10));
@@ -53,15 +53,14 @@ public class VentanaTipoProducto extends Frame {
         add(panelEncabezado, BorderLayout.NORTH);
         add(panelCentral, BorderLayout.CENTER);
 
-        // Ventanas a abrir según selección
-        //VentanaProductoFisico ventanaProductoFisico = new VentanaProductoFisico(this);
-        //VentanaServicio ventanaServicio = new VentanaServicio(this);
+        VentanaProductoFisico ventanaProductoFisico = new VentanaProductoFisico(this);
+        VentanaServicio ventanaServicio = new VentanaServicio(this);
 
-        // Eventos botones
+        
         btnProductoFisico.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //ventanaProductoFisico.setVisible(true);
+                ventanaProductoFisico.setVisible(true);
                 setVisible(false);
             }
         });
@@ -69,7 +68,7 @@ public class VentanaTipoProducto extends Frame {
         btnServicio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //ventanaServicio.setVisible(true);
+                ventanaServicio.setVisible(true);
                 setVisible(false);
             }
         });

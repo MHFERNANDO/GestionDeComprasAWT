@@ -66,6 +66,15 @@ public class VentanaProdu extends Frame {
                 setVisible(false);
             }
         });
+        VentanaTipoProducto ventanaTipoProducto = new VentanaTipoProducto(this);
+
+        botonIngresar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ventanaTipoProducto.setVisible(true);
+                setVisible(false);
+            }
+        });
 
         atras.addActionListener(new ActionListener() {
             @Override
