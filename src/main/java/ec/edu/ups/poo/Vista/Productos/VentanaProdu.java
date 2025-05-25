@@ -58,9 +58,9 @@ public class VentanaProdu extends Frame {
         add(panelCentro, BorderLayout.CENTER);
 
         // ---------- Ventanas auxiliares ----------
-        BuscarProducto buscarProducto = new BuscarProducto(this);
+        BuscarProducto buscarProducto = new BuscarProducto(this, ventanaIni);
         VentanaTipoProducto ventanaTipoProducto = new VentanaTipoProducto(this);
-        VentanaListaProducto ventanaListaProducto = new VentanaListaProducto(this);
+        VentanaListaProducto ventanaListaProducto = new VentanaListaProducto(this, ventanaIni);
 
         // ---------- Eventos de botones ----------
         botonBuscar.addActionListener(new ActionListener() {

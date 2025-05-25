@@ -17,6 +17,10 @@ public class Servicio {
         this.categoria = categoria;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public String getNombre() {
         return nombre;
     }

@@ -1,5 +1,9 @@
 package ec.edu.ups.poo.Vista.Productos;
 
+import ec.edu.ups.poo.Controlador.ProductoFisico;
+import ec.edu.ups.poo.Controlador.Servicio;
+import ec.edu.ups.poo.Vista.VentanaIni;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
@@ -9,9 +13,11 @@ public class VentanaListaProducto extends Frame {
     private TextArea areaListado;
     private Button btnAtras;
     private Frame ventanaAnterior;
+    private VentanaIni ventanaIni;
 
-    public VentanaListaProducto(Frame ventanaAnterior) {
+    public VentanaListaProducto(Frame ventanaAnterior, VentanaIni ventanaIni) {
         this.ventanaAnterior = ventanaAnterior;
+        this.ventanaIni = ventanaIni;
 
         setTitle("Lista de Productos y Servicios");
         setSize(600, 500);
@@ -52,7 +58,7 @@ public class VentanaListaProducto extends Frame {
             }
         });
 
-        setVisible(false); // Se mostrará cuando se llame desde otra ventana
+        setVisible(false);
     }
 
     public void mostrar() {
@@ -63,15 +69,15 @@ public class VentanaListaProducto extends Frame {
     private void mostrarProductosYServicios() {
         areaListado.setText("");
 
-        List<String> productos = VentanaProductoFisico.getProductos();
-        List<String> servicios = VentanaServicio.getServicios();
+        List<ProductoFisico> productos = ventanaIni.getListaProductosFisicos();
+        List<Servicio> servicios = ventanaIni.getListaServicios();
 
         areaListado.append("=== PRODUCTOS FÍSICOS ===\n");
         if (productos.isEmpty()) {
             areaListado.append("No hay productos registrados.\n");
         } else {
-            for (String p : productos) {
-                areaListado.append(p + "\n");
+            for (ProductoFisico p : productos) {
+                areaListado.append(p.toString() + "\n");
             }
         }
 
@@ -79,8 +85,8 @@ public class VentanaListaProducto extends Frame {
         if (servicios.isEmpty()) {
             areaListado.append("No hay servicios registrados.\n");
         } else {
-            for (String s : servicios) {
-                areaListado.append(s + "\n");
+            for (Servicio s : servicios) {
+                areaListado.append(s.toString() + "\n");
             }
         }
     }
