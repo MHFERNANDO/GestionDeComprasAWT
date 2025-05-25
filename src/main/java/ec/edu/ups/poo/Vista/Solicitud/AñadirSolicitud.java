@@ -84,7 +84,7 @@ public class AñadirSolicitud extends Frame {
                     boolean encontrado = false;
                     for (ProductoFisico p : listaProductosFisicos) {
                         if (p.getNombre().equalsIgnoreCase(producto)) {
-                            DetalleCompra detalle = new DetalleCompra(p.getNombre(), p.getPrecio(), cantidad);
+                            DetalleCompra detalle = new DetalleCompra(p.getNombre(), p.getPrecioUnitario(), cantidad);
                             nueva.agregarDetalle(detalle);
                             encontrado = true;
                             break;
@@ -95,7 +95,7 @@ public class AñadirSolicitud extends Frame {
                     if (!encontrado) {
                         for (Servicio s : listaServicios) {
                             if (s.getNombre().equalsIgnoreCase(producto)) {
-                                DetalleCompra detalle = new DetalleCompra(s.getNombre(), s.getPrecio(), cantidad);
+                                DetalleCompra detalle = new DetalleCompra(s.getNombre(), s.getPrecioUnitario(), cantidad);
                                 nueva.agregarDetalle(detalle);
                                 encontrado = true;
                                 break;
@@ -138,10 +138,10 @@ public class AñadirSolicitud extends Frame {
         areaProductos.setText(""); // Limpiar
 
         for (ProductoFisico p : listaProductosFisicos) {
-            areaProductos.append("Producto: " + p.getNombre() + " - $" + p.getPrecio() + "\n");
+            areaProductos.append("Producto: " + p.getNombre() + " - $" + p.getPrecioUnitario() + "\n");
         }
         for (Servicio s : listaServicios) {
-            areaProductos.append("Servicio: " + s.getNombre() + " - $" + s.getPrecio() + "\n");
+            areaProductos.append("Servicio: " + s.getNombre() + " - $" + s.getPrecioUnitario() + "\n");
         }
     }
 

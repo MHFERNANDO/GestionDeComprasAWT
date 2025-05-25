@@ -1,6 +1,7 @@
 package ec.edu.ups.poo.Vista.Persona;
 
 import ec.edu.ups.poo.Vista.VentanaIni;
+import ec.edu.ups.poo.Controlador.Persona;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -9,13 +10,12 @@ public class VentanaProveedor extends Frame {
 
     private TextField txtCedula;
     private TextField txtNombre;
-    private TextField txtEmpresa;
     private Button btnRegistrar;
     private Button btnAtras;
 
     public VentanaProveedor(Frame ventanaAnterior, VentanaIni ventanaIni) {
         setTitle("Registrar Proveedor");
-        setSize(500, 500);
+        setSize(500, 400);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 255));
@@ -30,7 +30,7 @@ public class VentanaProveedor extends Frame {
         panelTitulo.add(titulo);
 
         // Formulario
-        Panel panelForm = new Panel(new GridLayout(3, 2, 15, 15));
+        Panel panelForm = new Panel(new GridLayout(2, 2, 15, 15));
         panelForm.setBackground(new Color(245, 245, 255));
         panelForm.setFont(new Font("Arial", Font.PLAIN, 16));
 
@@ -40,21 +40,15 @@ public class VentanaProveedor extends Frame {
         Label lblNombre = new Label("Nombre:");
         txtNombre = new TextField(25);
 
-        Label lblEmpresa = new Label("Empresa:");
-        txtEmpresa = new TextField(25);
-
         panelForm.add(lblCedula);
         panelForm.add(txtCedula);
         panelForm.add(lblNombre);
         panelForm.add(txtNombre);
-        panelForm.add(lblEmpresa);
-        panelForm.add(txtEmpresa);
 
-        // Panel centro con margen y alineación
+        // Panel centro
         Panel panelCentro = new Panel(new BorderLayout());
         panelCentro.setBackground(new Color(245, 245, 255));
         panelCentro.add(panelForm, BorderLayout.CENTER);
-        //panelCentro.setPreferredSize(new Dimension(400, 250));
 
         // Botones
         btnRegistrar = new Button("Registrar");
@@ -73,6 +67,26 @@ public class VentanaProveedor extends Frame {
         add(panelCentro, BorderLayout.CENTER);
         add(panelBotones, BorderLayout.SOUTH);
 
+        // Funcionalidad del botón Registrar
+        btnRegistrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String cedula = txtCedula.getText().trim();
+                String nombre = txtNombre.getText().trim();
+
+                if (!cedula.isEmpty() && !nombre.isEmpty()) {
+                    Persona proveedor = new Persona(cedula, nombre);
+                    ventanaIni.getListaProveedores().add(proveedor);
+                    mostrarDialogo("Proveedor registrado correctamente.");
+
+                    txtCedula.setText("");
+                    txtNombre.setText("");
+                } else {
+                    mostrarDialogo("Por favor, complete todos los campos.");
+                }
+            }
+        });
+
         // Funcionalidad del botón Atrás
         btnAtras.addActionListener(new ActionListener() {
             @Override
@@ -86,11 +100,24 @@ public class VentanaProveedor extends Frame {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
-                System.exit(0);
             }
         });
 
         setVisible(false);
     }
-}
 
+    private void mostrarDialogo(String mensaje) {
+        Dialog dialogo = new Dialog(this, "Mensaje", true);
+        dialogo.setLayout(new FlowLayout());
+        dialogo.setSize(300, 100);
+        dialogo.setLocationRelativeTo(this);
+
+        Label lbl = new Label(mensaje);
+        Button btnCerrar = new Button("OK");
+        btnCerrar.addActionListener(e -> dialogo.setVisible(false));
+
+        dialogo.add(lbl);
+        dialogo.add(btnCerrar);
+        dialogo.setVisible(true);
+    }
+}

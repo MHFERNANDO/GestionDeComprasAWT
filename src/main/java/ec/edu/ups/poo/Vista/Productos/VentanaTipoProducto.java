@@ -2,8 +2,7 @@ package ec.edu.ups.poo.Vista.Productos;
 
 import java.awt.*;
 import java.awt.event.*;
-import ec.edu.ups.poo.Vista.Productos.VentanaProductoFisico;
-import ec.edu.ups.poo.Vista.Productos.VentanaServicio;
+import ec.edu.ups.poo.Vista.VentanaIni;
 
 public class VentanaTipoProducto extends Frame {
 
@@ -11,9 +10,11 @@ public class VentanaTipoProducto extends Frame {
     private Button btnServicio;
     private Button btnAtras;
     private Frame ventanaAnterior;
+    private VentanaIni ventanaIni;
 
-    public VentanaTipoProducto(Frame ventanaAnterior) {
+    public VentanaTipoProducto(Frame ventanaAnterior, VentanaIni ventanaIni) {
         this.ventanaAnterior = ventanaAnterior;
+        this.ventanaIni = ventanaIni;
 
         setTitle("Tipo de Producto");
         setSize(500, 500);
@@ -53,10 +54,10 @@ public class VentanaTipoProducto extends Frame {
         add(panelEncabezado, BorderLayout.NORTH);
         add(panelCentral, BorderLayout.CENTER);
 
-        VentanaProductoFisico ventanaProductoFisico = new VentanaProductoFisico(this);
-        VentanaServicio ventanaServicio = new VentanaServicio(this);
+        // Crear ventanas de registro pasando ventanaIni
+        VentanaProductoFisico ventanaProductoFisico = new VentanaProductoFisico(this, ventanaIni);
+        VentanaServicio ventanaServicio = new VentanaServicio(this, ventanaIni);
 
-        
         btnProductoFisico.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -91,4 +92,3 @@ public class VentanaTipoProducto extends Frame {
         setVisible(false);
     }
 }
-

@@ -1,23 +1,25 @@
 package ec.edu.ups.poo.Controlador;
 
 public class Servicio {
-    private String id;
+    private int id;
     private String nombre;
-    private double precio;
+    private double precioUnitario;
     private int cantidad;
     private String tipo;
     private String categoria;
+    private Persona proveedor;
 
-    public Servicio(String id, String nombre, double precio, int cantidad, String tipo, String categoria) {
+    public Servicio(int id, String nombre, double precioUnitario, int cantidad, String tipo, String categoria, Persona proveedor) {
         this.id = id;
         this.nombre = nombre;
-        this.precio = precio;
+        this.precioUnitario = precioUnitario;
         this.cantidad = cantidad;
         this.tipo = tipo;
         this.categoria = categoria;
+        this.proveedor = proveedor;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -25,13 +27,38 @@ public class Servicio {
         return nombre;
     }
 
-    public double getPrecio() {
-        return precio;
+    public double getPrecioUnitario() {
+        return precioUnitario;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+    public Persona getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(Persona proveedor) {
+        this.proveedor = proveedor;
     }
 
     @Override
     public String toString() {
-        return "Servicio: " + nombre + " | ID: " + id + " | Precio: $" + precio +
-                " | Cantidad: " + cantidad + " | Tipo: " + tipo + " | Categoría: " + categoria;
+        return "Servicio{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", precioUnitario=" + precioUnitario +
+                ", cantidad=" + cantidad +
+                ", tipo='" + tipo + '\'' +
+                ", categoria='" + categoria + '\'' +
+                '}';
     }
 }

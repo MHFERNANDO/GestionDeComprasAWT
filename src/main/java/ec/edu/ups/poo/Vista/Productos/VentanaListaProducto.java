@@ -2,6 +2,7 @@ package ec.edu.ups.poo.Vista.Productos;
 
 import ec.edu.ups.poo.Controlador.ProductoFisico;
 import ec.edu.ups.poo.Controlador.Servicio;
+import ec.edu.ups.poo.Controlador.Persona;
 import ec.edu.ups.poo.Vista.VentanaIni;
 
 import java.awt.*;
@@ -25,19 +26,16 @@ public class VentanaListaProducto extends Frame {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 255));
 
-        // Título
         Label titulo = new Label("Productos y Servicios Registrados");
         titulo.setFont(new Font("Arial", Font.BOLD, 20));
         titulo.setAlignment(Label.CENTER);
         add(titulo, BorderLayout.NORTH);
 
-        // Área de texto
         areaListado = new TextArea();
         areaListado.setEditable(false);
         areaListado.setFont(new Font("Monospaced", Font.PLAIN, 14));
         add(areaListado, BorderLayout.CENTER);
 
-        // Botón Atrás
         btnAtras = new Button("Atrás");
         btnAtras.setFont(new Font("Arial", Font.PLAIN, 14));
         Panel panelBoton = new Panel(new FlowLayout());
@@ -45,13 +43,11 @@ public class VentanaListaProducto extends Frame {
         panelBoton.add(btnAtras);
         add(panelBoton, BorderLayout.SOUTH);
 
-        // Acción del botón Atrás
         btnAtras.addActionListener(e -> {
             ventanaAnterior.setVisible(true);
             setVisible(false);
         });
 
-        // Al cerrar la ventana
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
@@ -72,21 +68,37 @@ public class VentanaListaProducto extends Frame {
         List<ProductoFisico> productos = ventanaIni.getListaProductosFisicos();
         List<Servicio> servicios = ventanaIni.getListaServicios();
 
-        areaListado.append("=== PRODUCTOS FÍSICOS ===\n");
+        areaListado.append("===== PRODUCTOS FÍSICOS =====\n");
         if (productos.isEmpty()) {
             areaListado.append("No hay productos registrados.\n");
         } else {
             for (ProductoFisico p : productos) {
-                areaListado.append(p.toString() + "\n");
+                Persona proveedor = p.getProveedor();
+                String nombreProveedor = (proveedor != null) ? proveedor.getNombre() : "No asignado";
+                areaListado.append("ID: " + p.getId() +
+                        ", Nombre: " + p.getNombre() +
+                        ", Precio: $" + p.getPrecioUnitario() +
+                        ", Cantidad: " + p.getCantidad() +
+                        ", Descripción: " + p.getDescripcion() +
+                        ", Presentación: " + p.getPresentacion() +
+                        ", Proveedor: " + nombreProveedor + "\n");
             }
         }
 
-        areaListado.append("\n=== SERVICIOS ===\n");
+        areaListado.append("\n===== SERVICIOS =====\n");
         if (servicios.isEmpty()) {
             areaListado.append("No hay servicios registrados.\n");
         } else {
             for (Servicio s : servicios) {
-                areaListado.append(s.toString() + "\n");
+                Persona proveedor = s.getProveedor();
+                String nombreProveedor = (proveedor != null) ? proveedor.getNombre() : "No asignado";
+                areaListado.append("ID: " + s.getId() +
+                        ", Nombre: " + s.getNombre() +
+                        ", Precio: $" + s.getPrecioUnitario() +
+                        ", Cantidad: " + s.getCantidad() +
+                        ", Tipo: " + s.getTipo() +
+                        ", Categoría: " + s.getCategoria() +
+                        ", Proveedor: " + nombreProveedor + "\n");
             }
         }
     }

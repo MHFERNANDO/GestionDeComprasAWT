@@ -43,6 +43,7 @@
             return listaProveedores;
         }
 
+
         public VentanaIni() {
 
             setTitle("Detalles de Compra");
@@ -109,11 +110,11 @@
             botonDetalles.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    VentanaSolicitud nuevaVentana = new VentanaSolicitud(VentanaIni.this);
-                    nuevaVentana.setVisible(true);
+                    ventanaDetalle.setVisible(true);
                     setVisible(false);
                 }
             });
+
             botonSalir.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
