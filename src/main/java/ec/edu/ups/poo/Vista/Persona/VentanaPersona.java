@@ -15,25 +15,27 @@ public class VentanaPersona extends Frame {
     private VentanaIni ventanaIni;
 
     public VentanaPersona(VentanaIni ventanaIni) {
-        this.ventanaIni=ventanaIni;
-        setTitle("Gestión de Proveedores");
+        this.ventanaIni = ventanaIni;
+
+        setTitle("Gestión de Proveedores o Empleado");
         setSize(500, 500);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
         setBackground(new Color(245, 245, 245));
 
-
-        Label textoTitulo = new Label("GESTIÓN DE PROVEEDORES");
+        // ---------- Encabezado ----------
+        Label textoTitulo = new Label("GESTIÓN DE PROVEEDORES O EMPLEADO");
         textoTitulo.setFont(new Font("Arial", Font.BOLD, 24));
         textoTitulo.setAlignment(Label.CENTER);
         textoTitulo.setForeground(new Color(40, 40, 100));
+
         Panel encabezado = new Panel();
         encabezado.setBackground(new Color(210, 230, 250));
         encabezado.setLayout(new FlowLayout(FlowLayout.CENTER));
         encabezado.add(textoTitulo);
         add(encabezado, BorderLayout.NORTH);
 
-        // ------------------ Botones ------------------
+        // ---------- Panel funcional ----------
         Panel panelFuncional = new Panel(new GridLayout(4, 1, 15, 15));
         panelFuncional.setFont(new Font("Arial", Font.PLAIN, 18));
         panelFuncional.setBackground(new Color(245, 245, 255));
@@ -44,24 +46,24 @@ public class VentanaPersona extends Frame {
         botonListar = new Button("Listar Personas");
         atras = new Button("Atras");
 
-        for (Button boton : new Button[]{botonBusqueda, botonIngreso, botonListar,atras}) {
+        for (Button boton : new Button[]{botonBusqueda, botonIngreso, botonListar, atras}) {
             boton.setFont(new Font("Arial", Font.BOLD, 16));
             boton.setBackground(new Color(230, 240, 255));
             boton.setForeground(Color.BLACK);
+            panelFuncional.add(boton);
         }
-
-        panelFuncional.add(botonBusqueda);
-        panelFuncional.add(botonIngreso);
-        panelFuncional.add(botonListar);
-        panelFuncional.add(atras);
 
         Panel panelCentro = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 30));
         panelCentro.add(panelFuncional);
         add(panelCentro, BorderLayout.CENTER);
 
-        // ------------------ Ventanas auxiliares ------------------
+        // ---------- Ventanas auxiliares ----------
         BuscarPersona buscarProveedor = new BuscarPersona(this);
+        VentanaAgregarPersona ventanaAgregarPersona = new VentanaAgregarPersona(this);
+        VentanaListaPersona ventanaLista = new VentanaListaPersona(this, ventanaIni);
 
+
+        // ---------- Eventos de botones ----------
         botonBusqueda.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -70,8 +72,6 @@ public class VentanaPersona extends Frame {
             }
         });
 
-        VentanaAgregarPersona ventanaAgregarPersona = new VentanaAgregarPersona(this);
-
         botonIngreso.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -79,6 +79,16 @@ public class VentanaPersona extends Frame {
                 setVisible(false);
             }
         });
+
+        botonListar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ventanaLista.mostrar();
+                setVisible(false);
+            }
+        });
+
+
         atras.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -87,14 +97,7 @@ public class VentanaPersona extends Frame {
             }
         });
 
-        /*botonIngreso.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                registrarProveedor.setVisible(true); // <--- aquí se muestra
-            }
-        });*/
-
-        // ------------------ Cierre ------------------
+        // ---------- Cierre de ventana ----------
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
@@ -103,5 +106,9 @@ public class VentanaPersona extends Frame {
         });
 
         setVisible(false);
+    }
+
+    public VentanaIni getVentanaIni() {
+        return ventanaIni;
     }
 }

@@ -2,6 +2,8 @@ package ec.edu.ups.poo.Vista.Productos;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VentanaProductoFisico extends Frame {
 
@@ -13,6 +15,7 @@ public class VentanaProductoFisico extends Frame {
     private TextField txtPresentacion;
     private Button btnRegistrar;
     private Button btnAtras;
+    private static List<String> productos = new ArrayList<>();
 
     public VentanaProductoFisico(Frame ventanaAnterior) {
         setTitle("Registrar Producto Físico");
@@ -21,7 +24,6 @@ public class VentanaProductoFisico extends Frame {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 255));
 
-        // Título
         Label titulo = new Label("Registro de Producto Físico");
         titulo.setFont(new Font("Arial", Font.BOLD, 22));
         titulo.setForeground(new Color(30, 30, 30));
@@ -31,7 +33,6 @@ public class VentanaProductoFisico extends Frame {
         panelTitulo.setBackground(new Color(230, 240, 255));
         panelTitulo.add(titulo);
 
-        // Formulario
         Panel panelForm = new Panel(new GridLayout(6, 2, 10, 15));
         panelForm.setBackground(new Color(245, 245, 255));
         panelForm.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -56,7 +57,6 @@ public class VentanaProductoFisico extends Frame {
         panelForm.add(new Label("Presentación:"));
         panelForm.add(txtPresentacion);
 
-        // Botones
         btnRegistrar = new Button("Registrar");
         btnRegistrar.setFont(new Font("Arial", Font.PLAIN, 14));
 
@@ -68,21 +68,39 @@ public class VentanaProductoFisico extends Frame {
         panelBotones.add(btnRegistrar);
         panelBotones.add(btnAtras);
 
-        // Agregar a la ventana
         add(panelTitulo, BorderLayout.NORTH);
         add(panelForm, BorderLayout.CENTER);
         add(panelBotones, BorderLayout.SOUTH);
 
-        // Acción botón Atrás
+        btnRegistrar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String producto = "ID: " + txtId.getText() + ", Nombre: " + txtNombre.getText()
+                        + ", Precio: " + txtPrecio.getText() + ", Cantidad: " + txtCantidad.getText()
+                        + ", Descripción: " + txtDescripcion.getText() + ", Presentación: " + txtPresentacion.getText();
+
+                productos.add(producto);
+                System.out.println("Producto Físico registrado:");
+                System.out.println(producto);
+
+                mostrarDialogo("Producto registrado correctamente.");
+
+                txtId.setText("");
+                txtNombre.setText("");
+                txtPrecio.setText("");
+                txtCantidad.setText("");
+                txtDescripcion.setText("");
+                txtPresentacion.setText("");
+            }
+        });
+
+
         btnAtras.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 ventanaAnterior.setVisible(true);
                 setVisible(false);
             }
         });
 
-        // Cierre de ventana
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
@@ -91,5 +109,23 @@ public class VentanaProductoFisico extends Frame {
 
         setVisible(false);
     }
-}
+    private void mostrarDialogo(String mensaje) {
+        Dialog dialogo = new Dialog(this, "Mensaje", true);
+        dialogo.setLayout(new FlowLayout());
+        dialogo.setSize(300, 100);
+        dialogo.setLocationRelativeTo(this);
 
+        Label lbl = new Label(mensaje);
+        Button btnCerrar = new Button("OK");
+        btnCerrar.addActionListener(e -> dialogo.setVisible(false));
+
+        dialogo.add(lbl);
+        dialogo.add(btnCerrar);
+        dialogo.setVisible(true);
+    }
+
+
+    public static List<String> getProductos() {
+        return productos;
+    }
+}

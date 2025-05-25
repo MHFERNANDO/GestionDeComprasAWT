@@ -1,81 +1,111 @@
 package ec.edu.ups.poo.Vista.Solicitud;
 
+import ec.edu.ups.poo.Controlador.SolicitudCompra;
+
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.util.List;
 
-public class BuscarSolicitud extends Frame{
-    private Checkbox chPro;
-    private Checkbox chEmpleado;
-    private Checkbox chPCed;
-    private Checkbox chPNomb;
+public class BuscarSolicitud extends Frame {
 
-    private TextField ingresoInfo;
-    private TextField resultadoInfo;
+    private TextField campoIdBusqueda;
+    private TextArea areaResultado;
+    private Choice comboEstado;
+    private Button botonBuscar;
+    private Button botonCambiarEstado;
+    private Button botonAtras;
 
-    private Button buscar;
-    private Button salir;
+    private Frame ventanaAnterior;
+    private List<SolicitudCompra> solicitudes;
+    private SolicitudCompra solicitudEncontrada;
 
-    public BuscarSolicitud (){
-        setTitle("Solicitud de Compra");
-        setSize(500,500);
+    public BuscarSolicitud(Frame ventanaAnterior, List<SolicitudCompra> solicitudes) {
+        this.ventanaAnterior = ventanaAnterior;
+        this.solicitudes = solicitudes;
+
+        setTitle("Buscar Solicitud de Compra");
+        setSize(500, 500);
+        setLayout(new GridLayout(7, 1));
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
 
-        Label titulo = new Label("Buscar Solicitud de Compra");
-        titulo.setFont(new Font("Arial",Font.BOLD,20));
-        titulo.setAlignment(Label.CENTER);
-        titulo.setForeground(new Color(30,30,30));
+        campoIdBusqueda = new TextField();
+        areaResultado = new TextArea();
+        areaResultado.setEditable(false);
 
-        Panel panelTitulo= new Panel();
-        panelTitulo.setBackground(new Color(220,220,220));
-        panelTitulo.add(titulo);
+        comboEstado = new Choice();
+        comboEstado.add("Pendiente");
+        comboEstado.add("Aprobado");
+        comboEstado.add("Rechazado");
 
-        Panel panelBox = new Panel(new GridLayout(1,1,10,10));
-        panelBox.setBackground(new Color(245,245,245));
-        panelBox.setFont(new Font("Arial", Font.PLAIN, 16));
-        chPCed=new Checkbox("Por id");
-        panelBox.add(chPCed);
+        botonBuscar = new Button("Buscar por ID");
+        botonCambiarEstado = new Button("Cambiar Estado");
+        botonAtras = new Button("Atrás");
 
-        Panel panelIngres = new Panel(new FlowLayout(FlowLayout.LEFT));
-        Label labelIngreso = new Label("Buscar: ");
-        labelIngreso.setAlignment(Label.LEFT);
-        ingresoInfo= new TextField(30);
-        panelIngres.add(labelIngreso);
-        panelIngres.add(ingresoInfo);
+        add(new Label("Ingrese ID de Solicitud:"));
+        add(campoIdBusqueda);
+        add(botonBuscar);
+        add(areaResultado);
+        add(new Label("Nuevo Estado:"));
+        add(comboEstado);
+        add(botonCambiarEstado);
+        add(botonAtras);
 
-        Panel panelRes = new Panel(new FlowLayout((FlowLayout.LEFT)));
-        Label labelResultado=new Label("Resultado: ");
-        labelResultado.setAlignment(Label.LEFT);
-        resultadoInfo= new TextField(30);
-        resultadoInfo.setEditable(false);
-        panelRes.add(labelResultado);
-        panelRes.add(resultadoInfo);
+        // Acción botón Buscar
+        botonBuscar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                String idTexto = campoIdBusqueda.getText().trim();
+                if (!idTexto.isEmpty()) {
+                    try {
+                        int id = Integer.parseInt(idTexto);
 
-        Panel panelCentro = new Panel(new GridLayout(3,1,10,10));
-        panelCentro.add(panelBox);
-        panelCentro.add(panelIngres);
-        panelCentro.add(panelRes);
+                        // Ordenar primero
+                        SolicitudCompra.ordenarPorId(solicitudes);
 
-        Panel panelBoton = new Panel(new FlowLayout(FlowLayout.CENTER,20,10));
-        buscar = new Button("Buscar");
-        salir=new Button("Salir");
-        buscar.setFont(new Font("Arial",Font.PLAIN,16));
-        salir.setFont(new Font("Arial",Font.PLAIN,16));
-        panelBoton.add(buscar);
-        panelBoton.add(salir);
+                        // Buscar
+                        int indice = SolicitudCompra.buscarPorId(solicitudes, id);
+                        if (indice != -1) {
+                            solicitudEncontrada = solicitudes.get(indice);
+                            areaResultado.setText(solicitudEncontrada.toString());
+                        } else {
+                            solicitudEncontrada = null;
+                            areaResultado.setText(">>> Solicitud no encontrada.");
+                        }
+                    } catch (NumberFormatException e) {
+                        areaResultado.setText(">>> ID inválido. Debe ser un número.");
+                    }
+                }
+            }
+        });
 
-        add(panelTitulo, BorderLayout.NORTH);
-        add(panelCentro,BorderLayout.CENTER);
-        add(panelBoton,BorderLayout.SOUTH);
+        // Acción botón Cambiar Estado
+        botonCambiarEstado.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                if (solicitudEncontrada != null) {
+                    String nuevoEstado = comboEstado.getSelectedItem();
+                    solicitudEncontrada.setEstado(nuevoEstado);
+                    areaResultado.setText(">>> Estado actualizado.\n\n" + solicitudEncontrada.toString());
+                } else {
+                    areaResultado.setText(">>> No se ha seleccionado ninguna solicitud.");
+                }
+            }
+        });
 
+        // Acción botón Atrás
+        botonAtras.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                ventanaAnterior.setVisible(true);
+                setVisible(false);
+            }
+        });
+
+        // Cierre de ventana
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
                 System.exit(0);
             }
         });
+
         setVisible(false);
     }
-
 }

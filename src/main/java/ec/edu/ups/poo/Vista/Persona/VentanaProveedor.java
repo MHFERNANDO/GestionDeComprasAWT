@@ -1,5 +1,7 @@
 package ec.edu.ups.poo.Vista.Persona;
 
+import ec.edu.ups.poo.Vista.VentanaIni;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -11,7 +13,7 @@ public class VentanaProveedor extends Frame {
     private Button btnRegistrar;
     private Button btnAtras;
 
-    public VentanaProveedor(Frame ventanaAnterior) {
+    public VentanaProveedor(Frame ventanaAnterior, VentanaIni ventanaIni) {
         setTitle("Registrar Proveedor");
         setSize(500, 500);
         setLocationRelativeTo(null);

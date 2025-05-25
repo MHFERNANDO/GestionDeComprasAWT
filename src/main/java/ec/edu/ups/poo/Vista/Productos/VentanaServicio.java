@@ -2,6 +2,8 @@ package ec.edu.ups.poo.Vista.Productos;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VentanaServicio extends Frame {
 
@@ -13,18 +15,15 @@ public class VentanaServicio extends Frame {
     private TextField txtCategoria;
     private Button btnRegistrar;
     private Button btnAtras;
-    private Frame ventanaAnterior;
+    private static List<String> servicios = new ArrayList<>();
 
     public VentanaServicio(Frame ventanaAnterior) {
-        this.ventanaAnterior = ventanaAnterior;
-
         setTitle("Registrar Servicio");
         setSize(500, 500);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 255));
 
-        // Título
         Label titulo = new Label("Registro de Servicio");
         titulo.setFont(new Font("Arial", Font.BOLD, 22));
         titulo.setForeground(new Color(30, 30, 30));
@@ -34,7 +33,6 @@ public class VentanaServicio extends Frame {
         panelTitulo.setBackground(new Color(230, 240, 255));
         panelTitulo.add(titulo);
 
-        // Formulario
         Panel panelForm = new Panel(new GridLayout(6, 2, 10, 15));
         panelForm.setBackground(new Color(245, 245, 255));
         panelForm.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -59,7 +57,6 @@ public class VentanaServicio extends Frame {
         panelForm.add(new Label("Categoría:"));
         panelForm.add(txtCategoria);
 
-        // Botones
         btnRegistrar = new Button("Registrar");
         btnRegistrar.setFont(new Font("Arial", Font.PLAIN, 14));
 
@@ -71,18 +68,22 @@ public class VentanaServicio extends Frame {
         panelBotones.add(btnRegistrar);
         panelBotones.add(btnAtras);
 
-        // Agregar componentes a la ventana
         add(panelTitulo, BorderLayout.NORTH);
         add(panelForm, BorderLayout.CENTER);
         add(panelBotones, BorderLayout.SOUTH);
 
-        // Acción botón Registrar (de momento solo mensaje de éxito)
         btnRegistrar.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
-                // Aquí puedes capturar los datos ingresados para usarlos en el modelo
-                System.out.println("Servicio registrado correctamente.");
-                // Limpia los campos si deseas
+                String servicio = "ID: " + txtId.getText() + ", Nombre: " + txtNombre.getText()
+                        + ", Precio: " + txtPrecio.getText() + ", Cantidad: " + txtCantidad.getText()
+                        + ", Tipo: " + txtTipo.getText() + ", Categoría: " + txtCategoria.getText();
+
+                servicios.add(servicio);
+                System.out.println("Servicio registrado:");
+                System.out.println(servicio);
+
+                mostrarDialogo("Servicio registrado correctamente.");
+
                 txtId.setText("");
                 txtNombre.setText("");
                 txtPrecio.setText("");
@@ -94,22 +95,37 @@ public class VentanaServicio extends Frame {
 
 
         btnAtras.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 ventanaAnterior.setVisible(true);
                 setVisible(false);
             }
         });
 
-
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
-                System.exit(0);
             }
         });
 
         setVisible(false);
     }
-}
+    private void mostrarDialogo(String mensaje) {
+        Dialog dialogo = new Dialog(this, "Mensaje", true);
+        dialogo.setLayout(new FlowLayout());
+        dialogo.setSize(300, 100);
+        dialogo.setLocationRelativeTo(this);
 
+        Label lbl = new Label(mensaje);
+        Button btnCerrar = new Button("OK");
+        btnCerrar.addActionListener(e -> dialogo.setVisible(false));
+
+        dialogo.add(lbl);
+        dialogo.add(btnCerrar);
+        dialogo.setVisible(true);
+    }
+
+
+    public static List<String> getServicios() {
+        return servicios;
+    }
+}

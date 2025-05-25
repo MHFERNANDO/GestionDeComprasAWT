@@ -1,13 +1,18 @@
 package ec.edu.ups.poo.Vista.Persona;
 
+import ec.edu.ups.poo.Controlador.Persona;
+import ec.edu.ups.poo.Vista.VentanaIni;
+
 import java.awt.*;
 import java.awt.event.*;
 
 public class VentanaAgregarPersona extends Frame {
 
-    private Button btnProveedor;
-    private Button btnEmpleado;
-    private Button atras;
+    private TextField campoNombre;
+    private TextField campoCedula;
+    private Choice tipoPersona;
+    private Button botonGuardar;
+    private Button botonAtras;
 
     private VentanaPersona ventanaPersona;
 
@@ -15,80 +20,62 @@ public class VentanaAgregarPersona extends Frame {
         this.ventanaPersona = ventanaPersona;
 
         setTitle("Agregar Persona");
-        setSize(500, 500);
+        setSize(400, 300);
+        setLayout(new GridLayout(5, 2, 10, 10));
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
-        setBackground(new Color(245, 245, 255));
 
-        // Título
-        Label titulo = new Label("¿Qué deseas ingresar?");
-        titulo.setFont(new Font("Arial", Font.BOLD, 22));
-        titulo.setForeground(new Color(30, 30, 30));
+        // Campos
+        add(new Label("Nombre:"));
+        campoNombre = new TextField();
+        add(campoNombre);
 
-        Panel panelTitulo = new Panel(new FlowLayout(FlowLayout.CENTER));
-        panelTitulo.setBackground(new Color(245, 245, 255));
-        panelTitulo.add(titulo);
+        add(new Label("Cédula:"));
+        campoCedula = new TextField();
+        add(campoCedula);
 
-        // Botones principales
-        btnProveedor = new Button("Ingresar Proveedor");
-        btnProveedor.setFont(new Font("Arial", Font.PLAIN, 16));
-        btnProveedor.setBackground(new Color(245, 245, 255));
-        btnProveedor.setForeground(new Color(30, 30, 30));
+        add(new Label("Tipo:"));
+        tipoPersona = new Choice();
+        tipoPersona.add("Empleado");
+        tipoPersona.add("Proveedor");
+        add(tipoPersona);
 
-        btnEmpleado = new Button("Ingresar Empleado");
-        btnEmpleado.setFont(new Font("Arial", Font.PLAIN, 16));
-        btnEmpleado.setBackground(new Color(245, 245, 255));
-        btnEmpleado.setForeground(new Color(30, 30, 30));
+        botonGuardar = new Button("Guardar");
+        botonAtras = new Button("Atras");
+        add(botonGuardar);
+        add(botonAtras);
 
-        Panel panelBotones = new Panel(new GridLayout(2, 1, 15, 15));
-        panelBotones.setBackground(new Color(245, 245, 255));
-        panelBotones.add(btnProveedor);
-        panelBotones.add(btnEmpleado);
+        // Acción del botón Guardar
+        botonGuardar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = campoNombre.getText();
+                String cedula = campoCedula.getText();
+                String tipo = tipoPersona.getSelectedItem();
 
-        Panel panelCentro = new Panel(new FlowLayout(FlowLayout.CENTER));
-        panelCentro.setBackground(new Color(245, 245, 255));
-        panelCentro.add(panelBotones);
+                if (nombre.isEmpty() || cedula.isEmpty()) {
+                    System.out.println("Faltan datos");
+                    return;
+                }
 
-        // Botón salir
-        atras = new Button("Atrás");
-        atras.setFont(new Font("Arial", Font.PLAIN, 14));
-        atras.setBackground(new Color(245, 245, 255));
-        atras.setForeground(new Color(30, 30, 30));
+                Persona nuevaPersona = new Persona(nombre, cedula);
 
-        Panel panelAbajo = new Panel(new FlowLayout(FlowLayout.CENTER));
-        panelAbajo.setBackground(new Color(245, 245, 255));
-        panelAbajo.add(atras);
+                if (tipo.equals("Empleado")) {
+                    ventanaPersona.getVentanaIni().listaEmpleados.add(nuevaPersona);
+                    System.out.println("Empleado registrado");
+                } else {
+                    ventanaPersona.getVentanaIni().listaProveedores.add(nuevaPersona);
+                    System.out.println("Proveedor registrado");
+                }
 
-        // Agregar paneles
-        add(panelTitulo, BorderLayout.NORTH);
-        add(panelCentro, BorderLayout.CENTER);
-        add(panelAbajo, BorderLayout.SOUTH);
+                campoNombre.setText("");
+                campoCedula.setText("");
+            }
+        });
 
-        // Acción: volver atrás
-        atras.addActionListener(new ActionListener() {
+        botonAtras.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ventanaPersona.setVisible(true);
-                setVisible(false);
-            }
-        });
-
-        // Acción: ir a proveedor
-        btnProveedor.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                VentanaProveedor ventanaProveedor = new VentanaProveedor(VentanaAgregarPersona.this);
-                ventanaProveedor.setVisible(true);
-                setVisible(false);
-            }
-        });
-
-        // Acción: ir a empleado
-        btnEmpleado.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                VentanaEmpleado ventanaEmpleado = new VentanaEmpleado(VentanaAgregarPersona.this);
-                ventanaEmpleado.setVisible(true);
                 setVisible(false);
             }
         });
@@ -103,4 +90,3 @@ public class VentanaAgregarPersona extends Frame {
         setVisible(false);
     }
 }
-

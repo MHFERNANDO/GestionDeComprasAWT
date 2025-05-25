@@ -1,5 +1,8 @@
 package ec.edu.ups.poo.Vista.Persona;
 
+import ec.edu.ups.poo.Controlador.Persona;
+import ec.edu.ups.poo.Vista.VentanaIni;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -12,7 +15,7 @@ public class VentanaEmpleado extends Frame {
     private Button btnRegistrar;
     private Button btnAtras;
 
-    public VentanaEmpleado(Frame ventanaAnterior) {
+    public VentanaEmpleado(Frame ventanaAnterior, VentanaIni ventanaIni) {
         setTitle("Registrar Empleado");
         setSize(500, 500);
         setLocationRelativeTo(null);
@@ -23,7 +26,6 @@ public class VentanaEmpleado extends Frame {
         Label titulo = new Label("Registro de Empleado");
         titulo.setFont(new Font("Arial", Font.BOLD, 22));
         titulo.setForeground(new Color(30, 30, 30));
-
         Panel panelTitulo = new Panel(new FlowLayout(FlowLayout.CENTER));
         panelTitulo.setBackground(new Color(230, 240, 255));
         panelTitulo.add(titulo);
@@ -54,7 +56,7 @@ public class VentanaEmpleado extends Frame {
         panelForm.add(lblCargo);
         panelForm.add(txtCargo);
 
-        // Panel centro con margen y alineación
+        // Panel centro
         Panel panelCentro = new Panel(new BorderLayout());
         panelCentro.setBackground(new Color(245, 245, 255));
         panelCentro.add(panelForm, BorderLayout.CENTER);
@@ -63,7 +65,6 @@ public class VentanaEmpleado extends Frame {
         // Botones
         btnRegistrar = new Button("Registrar");
         btnRegistrar.setFont(new Font("Arial", Font.PLAIN, 14));
-
         btnAtras = new Button("Atrás");
         btnAtras.setFont(new Font("Arial", Font.PLAIN, 14));
 
@@ -77,7 +78,28 @@ public class VentanaEmpleado extends Frame {
         add(panelCentro, BorderLayout.CENTER);
         add(panelBotones, BorderLayout.SOUTH);
 
-        // Funcionalidad del botón Atrás
+        // Acción botón registrar
+        btnRegistrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = txtNombre.getText().trim();
+                String cedula = txtCedula.getText().trim();
+
+                if (nombre.isEmpty() || cedula.isEmpty()) {
+                    mostrarMensaje("Debe llenar todos los campos.");
+                    return;
+                }
+
+                Persona nuevoEmpleado = new Persona(nombre, cedula);
+                ventanaIni.listaEmpleados.add(nuevoEmpleado);  // ← uso correcto
+
+                mostrarMensaje("Empleado registrado con éxito.");
+                txtNombre.setText("");
+                txtCedula.setText("");
+            }
+        });
+
+        // Acción botón atrás
         btnAtras.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -86,7 +108,7 @@ public class VentanaEmpleado extends Frame {
             }
         });
 
-        // Cerrar ventana
+        // Cierre ventana
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
@@ -96,5 +118,16 @@ public class VentanaEmpleado extends Frame {
 
         setVisible(false);
     }
-}
 
+    private void mostrarMensaje(String mensaje) {
+        Dialog dialogo = new Dialog(this, "Mensaje", true);
+        dialogo.setLayout(new FlowLayout());
+        dialogo.setSize(300, 100);
+        dialogo.add(new Label(mensaje));
+        Button cerrar = new Button("Cerrar");
+        cerrar.addActionListener(e -> dialogo.setVisible(false));
+        dialogo.add(cerrar);
+        dialogo.setLocationRelativeTo(this);
+        dialogo.setVisible(true);
+    }
+}
