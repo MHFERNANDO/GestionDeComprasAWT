@@ -1,9 +1,11 @@
 package ec.edu.ups.poo.Vista.Productos;
 
+import ec.edu.ups.poo.Vista.VentanaIni;
+import ec.edu.ups.poo.Controlador.ProductoFisico;
+import ec.edu.ups.poo.Controlador.Persona;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class VentanaProductoFisico extends Frame {
 
@@ -13,11 +15,17 @@ public class VentanaProductoFisico extends Frame {
     private TextField txtCantidad;
     private TextField txtDescripcion;
     private TextField txtPresentacion;
+    private Choice choiceProveedor;
     private Button btnRegistrar;
     private Button btnAtras;
-    private static List<String> productos = new ArrayList<>();
 
-    public VentanaProductoFisico(Frame ventanaAnterior) {
+    private Frame ventanaAnterior;
+    private VentanaIni ventanaIni;
+
+    public VentanaProductoFisico(Frame ventanaAnterior, VentanaIni ventanaIni) {
+        this.ventanaAnterior = ventanaAnterior;
+        this.ventanaIni = ventanaIni;
+
         setTitle("Registrar Producto Físico");
         setSize(500, 500);
         setLocationRelativeTo(null);
@@ -33,7 +41,7 @@ public class VentanaProductoFisico extends Frame {
         panelTitulo.setBackground(new Color(230, 240, 255));
         panelTitulo.add(titulo);
 
-        Panel panelForm = new Panel(new GridLayout(6, 2, 10, 15));
+        Panel panelForm = new Panel(new GridLayout(7, 2, 10, 15));
         panelForm.setBackground(new Color(245, 245, 255));
         panelForm.setFont(new Font("Arial", Font.PLAIN, 16));
 
@@ -43,6 +51,7 @@ public class VentanaProductoFisico extends Frame {
         txtCantidad = new TextField(25);
         txtDescripcion = new TextField(25);
         txtPresentacion = new TextField(25);
+        choiceProveedor = new Choice();
 
         panelForm.add(new Label("ID del Producto:"));
         panelForm.add(txtId);
@@ -56,6 +65,8 @@ public class VentanaProductoFisico extends Frame {
         panelForm.add(txtDescripcion);
         panelForm.add(new Label("Presentación:"));
         panelForm.add(txtPresentacion);
+        panelForm.add(new Label("Proveedor:"));
+        panelForm.add(choiceProveedor);
 
         btnRegistrar = new Button("Registrar");
         btnRegistrar.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -74,25 +85,38 @@ public class VentanaProductoFisico extends Frame {
 
         btnRegistrar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String producto = "ID: " + txtId.getText() + ", Nombre: " + txtNombre.getText()
-                        + ", Precio: " + txtPrecio.getText() + ", Cantidad: " + txtCantidad.getText()
-                        + ", Descripción: " + txtDescripcion.getText() + ", Presentación: " + txtPresentacion.getText();
+                try {
+                    int id = Integer.parseInt(txtId.getText().trim());
+                    String nombre = txtNombre.getText().trim();
+                    double precio = Double.parseDouble(txtPrecio.getText().trim());
+                    int cantidad = Integer.parseInt(txtCantidad.getText().trim());
+                    String descripcion = txtDescripcion.getText().trim();
+                    String presentacion = txtPresentacion.getText().trim();
 
-                productos.add(producto);
-                System.out.println("Producto Físico registrado:");
-                System.out.println(producto);
+                    int indexProveedor = choiceProveedor.getSelectedIndex();
+                    Persona proveedorSeleccionado = ventanaIni.getListaProveedores().get(indexProveedor);
 
-                mostrarDialogo("Producto registrado correctamente.");
+                    ProductoFisico producto = new ProductoFisico(id, nombre, precio, cantidad, descripcion, presentacion, proveedorSeleccionado);
+                    ventanaIni.getListaProductosFisicos().add(producto);
 
-                txtId.setText("");
-                txtNombre.setText("");
-                txtPrecio.setText("");
-                txtCantidad.setText("");
-                txtDescripcion.setText("");
-                txtPresentacion.setText("");
+                    mostrarDialogo("Producto registrado correctamente.");
+
+                    txtId.setText("");
+                    txtNombre.setText("");
+                    txtPrecio.setText("");
+                    txtCantidad.setText("");
+                    txtDescripcion.setText("");
+                    txtPresentacion.setText("");
+                    if (choiceProveedor.getItemCount() > 0) {
+                        choiceProveedor.select(0);
+                    }
+                } catch (NumberFormatException ex) {
+                    mostrarDialogo("Error: Verifica que los campos numéricos tengan valores válidos.");
+                } catch (IndexOutOfBoundsException ex) {
+                    mostrarDialogo("Error: Debes seleccionar un proveedor.");
+                }
             }
         });
-
 
         btnAtras.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -109,6 +133,22 @@ public class VentanaProductoFisico extends Frame {
 
         setVisible(false);
     }
+
+    public void actualizarChoiceProveedores() {
+        choiceProveedor.removeAll();
+        for (Persona p : ventanaIni.getListaProveedores()) {
+            choiceProveedor.add(p.getNombre() + " - " + p.getCedula());
+        }
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        if (visible) {
+            actualizarChoiceProveedores(); // <-- Aquí actualiza cada vez que se muestra
+        }
+        super.setVisible(visible);
+    }
+
     private void mostrarDialogo(String mensaje) {
         Dialog dialogo = new Dialog(this, "Mensaje", true);
         dialogo.setLayout(new FlowLayout());
@@ -117,15 +157,15 @@ public class VentanaProductoFisico extends Frame {
 
         Label lbl = new Label(mensaje);
         Button btnCerrar = new Button("OK");
-        btnCerrar.addActionListener(e -> dialogo.setVisible(false));
+
+        btnCerrar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dialogo.setVisible(false);
+            }
+        });
 
         dialogo.add(lbl);
         dialogo.add(btnCerrar);
         dialogo.setVisible(true);
-    }
-
-
-    public static List<String> getProductos() {
-        return productos;
     }
 }

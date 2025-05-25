@@ -2,8 +2,10 @@ package ec.edu.ups.poo.Vista.Productos;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
+
+import ec.edu.ups.poo.Vista.VentanaIni;
+import ec.edu.ups.poo.Controlador.Servicio;
+import ec.edu.ups.poo.Controlador.Persona;
 
 public class VentanaServicio extends Frame {
 
@@ -13,11 +15,17 @@ public class VentanaServicio extends Frame {
     private TextField txtCantidad;
     private TextField txtTipo;
     private TextField txtCategoria;
+    private Choice choiceProveedor;
     private Button btnRegistrar;
     private Button btnAtras;
-    private static List<String> servicios = new ArrayList<>();
 
-    public VentanaServicio(Frame ventanaAnterior) {
+    private Frame ventanaAnterior;
+    private VentanaIni ventanaIni;
+
+    public VentanaServicio(Frame ventanaAnterior, VentanaIni ventanaIni) {
+        this.ventanaAnterior = ventanaAnterior;
+        this.ventanaIni = ventanaIni;
+
         setTitle("Registrar Servicio");
         setSize(500, 500);
         setLocationRelativeTo(null);
@@ -33,7 +41,7 @@ public class VentanaServicio extends Frame {
         panelTitulo.setBackground(new Color(230, 240, 255));
         panelTitulo.add(titulo);
 
-        Panel panelForm = new Panel(new GridLayout(6, 2, 10, 15));
+        Panel panelForm = new Panel(new GridLayout(7, 2, 10, 15));
         panelForm.setBackground(new Color(245, 245, 255));
         panelForm.setFont(new Font("Arial", Font.PLAIN, 16));
 
@@ -43,6 +51,7 @@ public class VentanaServicio extends Frame {
         txtCantidad = new TextField(25);
         txtTipo = new TextField(25);
         txtCategoria = new TextField(25);
+        choiceProveedor = new Choice();
 
         panelForm.add(new Label("ID del Servicio:"));
         panelForm.add(txtId);
@@ -56,6 +65,8 @@ public class VentanaServicio extends Frame {
         panelForm.add(txtTipo);
         panelForm.add(new Label("Categoría:"));
         panelForm.add(txtCategoria);
+        panelForm.add(new Label("Proveedor:"));
+        panelForm.add(choiceProveedor);
 
         btnRegistrar = new Button("Registrar");
         btnRegistrar.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -74,25 +85,39 @@ public class VentanaServicio extends Frame {
 
         btnRegistrar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String servicio = "ID: " + txtId.getText() + ", Nombre: " + txtNombre.getText()
-                        + ", Precio: " + txtPrecio.getText() + ", Cantidad: " + txtCantidad.getText()
-                        + ", Tipo: " + txtTipo.getText() + ", Categoría: " + txtCategoria.getText();
+                try {
+                    int id = Integer.parseInt(txtId.getText().trim());
+                    String nombre = txtNombre.getText().trim();
+                    double precio = Double.parseDouble(txtPrecio.getText().trim());
+                    int cantidad = Integer.parseInt(txtCantidad.getText().trim());
+                    String tipo = txtTipo.getText().trim();
+                    String categoria = txtCategoria.getText().trim();
 
-                servicios.add(servicio);
-                System.out.println("Servicio registrado:");
-                System.out.println(servicio);
+                    int indexProveedor = choiceProveedor.getSelectedIndex();
+                    Persona proveedorSeleccionado = ventanaIni.getListaProveedores().get(indexProveedor);
 
-                mostrarDialogo("Servicio registrado correctamente.");
+                    Servicio servicio = new Servicio(id, nombre, precio, cantidad, tipo, categoria, proveedorSeleccionado);
+                    ventanaIni.getListaServicios().add(servicio);
 
-                txtId.setText("");
-                txtNombre.setText("");
-                txtPrecio.setText("");
-                txtCantidad.setText("");
-                txtTipo.setText("");
-                txtCategoria.setText("");
+                    mostrarDialogo("Servicio registrado correctamente.");
+
+                    txtId.setText("");
+                    txtNombre.setText("");
+                    txtPrecio.setText("");
+                    txtCantidad.setText("");
+                    txtTipo.setText("");
+                    txtCategoria.setText("");
+                    if (choiceProveedor.getItemCount() > 0) {
+                        choiceProveedor.select(0);
+                    }
+
+                } catch (NumberFormatException ex) {
+                    mostrarDialogo("Error: asegúrese de que ID, precio y cantidad sean numéricos.");
+                } catch (IndexOutOfBoundsException ex) {
+                    mostrarDialogo("Error: Debes seleccionar un proveedor.");
+                }
             }
         });
-
 
         btnAtras.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -109,6 +134,25 @@ public class VentanaServicio extends Frame {
 
         setVisible(false);
     }
+
+    private void actualizarChoiceProveedores() {
+        choiceProveedor.removeAll();
+        for (Persona p : ventanaIni.getListaProveedores()) {
+            choiceProveedor.add(p.getNombre() + " - " + p.getCedula());
+        }
+        if (choiceProveedor.getItemCount() > 0) {
+            choiceProveedor.select(0);
+        }
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        if (visible) {
+            actualizarChoiceProveedores(); // <-- actualiza los proveedores antes de mostrar
+        }
+        super.setVisible(visible);
+    }
+
     private void mostrarDialogo(String mensaje) {
         Dialog dialogo = new Dialog(this, "Mensaje", true);
         dialogo.setLayout(new FlowLayout());
@@ -117,15 +161,15 @@ public class VentanaServicio extends Frame {
 
         Label lbl = new Label(mensaje);
         Button btnCerrar = new Button("OK");
-        btnCerrar.addActionListener(e -> dialogo.setVisible(false));
+
+        btnCerrar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dialogo.setVisible(false);
+            }
+        });
 
         dialogo.add(lbl);
         dialogo.add(btnCerrar);
         dialogo.setVisible(true);
-    }
-
-
-    public static List<String> getServicios() {
-        return servicios;
     }
 }

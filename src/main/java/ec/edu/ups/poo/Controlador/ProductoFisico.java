@@ -1,23 +1,25 @@
 package ec.edu.ups.poo.Controlador;
 
 public class ProductoFisico {
-    private String id;
+    private int id;
     private String nombre;
-    private double precio;
+    private double precioUnitario;
     private int cantidad;
     private String descripcion;
     private String presentacion;
+    private Persona proveedor;
 
-    public ProductoFisico(String id, String nombre, double precio, int cantidad, String descripcion, String presentacion) {
+    public ProductoFisico(int id, String nombre, double precioUnitario, int cantidad, String descripcion, String presentacion, Persona proveedor) {
         this.id = id;
         this.nombre = nombre;
-        this.precio = precio;
+        this.precioUnitario = precioUnitario;
         this.cantidad = cantidad;
         this.descripcion = descripcion;
         this.presentacion = presentacion;
+        this.proveedor = proveedor;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -25,17 +27,39 @@ public class ProductoFisico {
         return nombre;
     }
 
-    public double getPrecio() {
-        return precio;
+    public double getPrecioUnitario() {
+        return precioUnitario;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public String getPresentacion() {
+        return presentacion;
+    }
+
+    public Persona getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(Persona proveedor) {
+        this.proveedor = proveedor;
     }
 
     @Override
     public String toString() {
-        return "Producto: " + nombre + " | ID: " + id + " | Precio: $" + precio +
-                " | Cantidad: " + cantidad + " | Descripción: " + descripcion +
-                " | Presentación: " + presentacion;
+        return "ProductoFisico{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", precioUnitario=" + precioUnitario +
+                ", cantidad=" + cantidad +
+                ", descripcion='" + descripcion + '\'' +
+                ", presentacion='" + presentacion + '\'' +
+                '}';
     }
 }
-
-
-

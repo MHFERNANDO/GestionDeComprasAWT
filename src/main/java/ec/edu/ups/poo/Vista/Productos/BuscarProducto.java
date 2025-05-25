@@ -6,8 +6,6 @@ import ec.edu.ups.poo.Vista.VentanaIni;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BuscarProducto extends Frame {
 
@@ -113,58 +111,58 @@ public class BuscarProducto extends Frame {
     }
 
     private void realizarBusqueda() {
-        String criterio = ingresoInfo.getText();
-        if (criterio == null || criterio.length() == 0) {
+        String criterio = ingresoInfo.getText().trim();
+        if (criterio.isEmpty()) {
             resultadoInfo.setText("Ingrese un valor.");
             return;
         }
 
-        List<Object> lista = new ArrayList<>();
-        if (chFisico.getState()) {
-            lista.addAll(ventanaIni.getListaProductosFisicos());
-        } else if (chServicio.getState()) {
-            lista.addAll(ventanaIni.getListaServicios());
-        } else {
+        boolean buscarFisico = chFisico.getState();
+        boolean buscarServicio = chServicio.getState();
+        boolean buscarPorCodigo = chCodigo.getState();
+        boolean buscarPorNombre = chNombre.getState();
+
+        if (!buscarFisico && !buscarServicio) {
             resultadoInfo.setText("Seleccione tipo de producto.");
             return;
         }
 
-        if (chCodigo.getState()) {
-            for (int i = 0; i < lista.size(); i++) {
-                String id = lista.get(i) instanceof ProductoFisico
-                        ? ((ProductoFisico) lista.get(i)).getId()
-                        : ((Servicio) lista.get(i)).getId();
-                if (sonIguales(id, criterio)) {
-                    resultadoInfo.setText(lista.get(i).toString());
-                    return;
-                }
-            }
-            resultadoInfo.setText("No encontrado.");
-        } else if (chNombre.getState()) {
-            for (int i = 0; i < lista.size(); i++) {
-                String nombre = lista.get(i) instanceof ProductoFisico
-                        ? ((ProductoFisico) lista.get(i)).getNombre()
-                        : ((Servicio) lista.get(i)).getNombre();
-                if (sonIguales(nombre, criterio)) {
-                    resultadoInfo.setText(lista.get(i).toString());
-                    return;
-                }
-            }
-            resultadoInfo.setText("No encontrado.");
-        } else {
+        if (!buscarPorCodigo && !buscarPorNombre) {
             resultadoInfo.setText("Seleccione un criterio de búsqueda.");
+            return;
         }
+
+        // Buscar producto físico
+        if (buscarFisico) {
+            for (ProductoFisico pf : ventanaIni.getListaProductosFisicos()) {
+                if (buscarPorCodigo && sonIguales(String.valueOf(pf.getId()), criterio)) {
+                    resultadoInfo.setText(pf.toString());
+                    return;
+                } else if (buscarPorNombre && sonIguales(pf.getNombre(), criterio)) {
+                    resultadoInfo.setText(pf.toString());
+                    return;
+                }
+            }
+        }
+
+        // Buscar servicio
+        if (buscarServicio) {
+            for (Servicio s : ventanaIni.getListaServicios()) {
+                if (buscarPorCodigo && sonIguales(String.valueOf(s.getId()), criterio)) {
+                    resultadoInfo.setText(s.toString());
+                    return;
+                } else if (buscarPorNombre && sonIguales(s.getNombre(), criterio)) {
+                    resultadoInfo.setText(s.toString());
+                    return;
+                }
+            }
+        }
+
+        resultadoInfo.setText("No encontrado.");
     }
 
-    // Comparación carácter por carácter sin equals, compareTo, ni trim
     private boolean sonIguales(String a, String b) {
         if (a == null || b == null) return false;
-        if (a.length() != b.length()) return false;
-
-        for (int i = 0; i < a.length(); i++) {
-            if (a.charAt(i) != b.charAt(i)) return false;
-        }
-
-        return true;
+        return a.trim().equalsIgnoreCase(b.trim());
     }
 }
