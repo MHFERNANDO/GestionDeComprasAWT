@@ -3,12 +3,10 @@ package ec.edu.ups.poo.Vista.Productos;
 import ec.edu.ups.poo.Vista.VentanaIni;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
 public class VentanaProdu extends Frame {
+
     private Button botonBuscar;
     private Button botonIngresar;
     private Button botonListar;
@@ -16,49 +14,55 @@ public class VentanaProdu extends Frame {
 
     private VentanaIni ventanaIni;
 
+    public VentanaProdu(VentanaIni ventanaIni) {
+        this.ventanaIni = ventanaIni;
 
-    public VentanaProdu(VentanaIni ventanaIni){
-        setTitle("Productos");
-        setSize(500,500);
+        setTitle("Gestión de Productos");
+        setSize(500, 500);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
+        setBackground(new Color(245, 245, 245));
 
-        Label textoTitulo=new Label("PRODUCTOS");
-        textoTitulo.setFont(new Font("Arial",Font.BOLD,24));
+        // ---------- Encabezado ----------
+        Label textoTitulo = new Label("GESTIÓN DE PRODUCTOS");
+        textoTitulo.setFont(new Font("Arial", Font.BOLD, 24));
         textoTitulo.setAlignment(Label.CENTER);
+        textoTitulo.setForeground(new Color(40, 40, 100));
 
-        Panel encabezado=new Panel();
-        encabezado.setBackground(new Color(210,230,250));
+        Panel encabezado = new Panel();
+        encabezado.setBackground(new Color(210, 230, 250));
+        encabezado.setLayout(new FlowLayout(FlowLayout.CENTER));
         encabezado.add(textoTitulo);
+        add(encabezado, BorderLayout.NORTH);
 
-        Panel panelFuncional = new Panel(new GridLayout(4,1,10,10));
-        panelFuncional.setPreferredSize(new Dimension(200,200));
+        // ---------- Panel funcional ----------
+        Panel panelFuncional = new Panel(new GridLayout(4, 1, 15, 15));
         panelFuncional.setFont(new Font("Arial", Font.PLAIN, 18));
+        panelFuncional.setBackground(new Color(245, 245, 255));
+        panelFuncional.setPreferredSize(new Dimension(300, 200));
 
         botonBuscar = new Button("Buscar Productos");
-        botonBuscar.setBackground(new Color(230, 240, 255));
-        botonIngresar=new Button("Añadir Productos");
-        botonIngresar.setBackground(new Color(230, 240, 255));
-        botonListar=new Button("Listar Productos");
-        botonListar.setBackground(new Color(230, 240, 255));
-        atras=new Button("Atras");
-        atras.setBackground(new Color(230, 240, 255));
-        botonBuscar.setFont(new Font("Arial", Font.PLAIN, 16));
-        botonIngresar.setFont(new Font("Arial", Font.PLAIN, 16));
-        botonListar.setFont(new Font("Arial", Font.PLAIN, 16));
-        atras.setFont(new Font("Arial", Font.PLAIN, 16));
-        panelFuncional.add(botonBuscar);
-        panelFuncional.add(botonIngresar);
-        panelFuncional.add(botonListar);
-        panelFuncional.add(atras);
+        botonIngresar = new Button("Añadir Productos");
+        botonListar = new Button("Listar Productos");
+        atras = new Button("Atras");
 
-        Panel panelPrincipal = new Panel(new FlowLayout(FlowLayout.CENTER,20,20));
-        panelPrincipal.add(panelFuncional);
-        add(encabezado,BorderLayout.NORTH);
-        add(panelPrincipal,BorderLayout.CENTER);
+        for (Button boton : new Button[]{botonBuscar, botonIngresar, botonListar, atras}) {
+            boton.setFont(new Font("Arial", Font.BOLD, 16));
+            boton.setBackground(new Color(230, 240, 255));
+            boton.setForeground(Color.BLACK);
+            panelFuncional.add(boton);
+        }
 
-        BuscarProducto buscarProducto = new BuscarProducto();
+        Panel panelCentro = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 30));
+        panelCentro.add(panelFuncional);
+        add(panelCentro, BorderLayout.CENTER);
 
+        // ---------- Ventanas auxiliares ----------
+        BuscarProducto buscarProducto = new BuscarProducto(this);
+        VentanaTipoProducto ventanaTipoProducto = new VentanaTipoProducto(this);
+        VentanaListaProducto ventanaListaProducto = new VentanaListaProducto(this);
+
+        // ---------- Eventos de botones ----------
         botonBuscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -66,12 +70,19 @@ public class VentanaProdu extends Frame {
                 setVisible(false);
             }
         });
-        VentanaTipoProducto ventanaTipoProducto = new VentanaTipoProducto(this);
 
         botonIngresar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ventanaTipoProducto.setVisible(true);
+                setVisible(false);
+            }
+        });
+
+        botonListar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ventanaListaProducto.mostrar(); // Usa método mostrar como en Persona
                 setVisible(false);
             }
         });
@@ -84,13 +95,18 @@ public class VentanaProdu extends Frame {
             }
         });
 
+        // ---------- Cierre de ventana ----------
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
                 System.exit(0);
             }
         });
+
         setVisible(false);
     }
-}
 
+    public VentanaIni getVentanaIni() {
+        return ventanaIni;
+    }
+}

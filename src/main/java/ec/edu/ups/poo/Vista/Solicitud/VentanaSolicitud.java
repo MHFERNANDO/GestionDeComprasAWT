@@ -1,74 +1,107 @@
 package ec.edu.ups.poo.Vista.Solicitud;
 
-import ec.edu.ups.poo.Vista.Persona.VentanaPersona;
+import ec.edu.ups.poo.Controlador.SolicitudCompra;
+import ec.edu.ups.poo.Controlador.ProductoFisico;
+import ec.edu.ups.poo.Controlador.Servicio;
 import ec.edu.ups.poo.Vista.VentanaIni;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class VentanaSolicitud extends Frame{
+public class VentanaSolicitud extends Frame {
+
     private Button botonBuscar;
     private Button botonIngresar;
     private Button botonListar;
     private Button atras;
 
-    private VentanaIni ventanaIni;
+    VentanaIni ventanaIni;
 
-    public VentanaSolicitud(VentanaIni ventanaIni){
-        this.ventanaIni=ventanaIni;
+    private List<SolicitudCompra> listaSolicitudes = new ArrayList<>();
+
+    public AñadirSolicitud ventanaAñadir;
+    private ListarSolicitud ventanaListar;
+    private BuscarSolicitud ventanaBuscar;
+
+    public VentanaSolicitud(VentanaIni ventanaIni) {
+        this.ventanaIni = ventanaIni;
+
         setTitle("Solicitud de Compra");
-        setSize(500,500);
+        setSize(500, 500);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        Label textoTitulo=new Label("Solicitud de Compra");
-        textoTitulo.setFont(new Font("Arial",Font.BOLD,24));
+        Label textoTitulo = new Label("Solicitud de Compra");
+        textoTitulo.setFont(new Font("Arial", Font.BOLD, 24));
         textoTitulo.setAlignment(Label.CENTER);
 
-        Panel encabezado=new Panel();
+        Panel encabezado = new Panel();
         encabezado.setBackground(new Color(230, 240, 255));
         encabezado.add(textoTitulo);
 
-        Panel panelFuncional = new Panel(new GridLayout(4,1,10,10));
-        panelFuncional.setPreferredSize(new Dimension(200,200));
+        Panel panelFuncional = new Panel(new GridLayout(4, 1, 10, 10));
+        panelFuncional.setPreferredSize(new Dimension(200, 200));
         panelFuncional.setFont(new Font("Arial", Font.PLAIN, 18));
 
-        botonBuscar=new Button("Buscar Solicitud de Compra");
+        botonBuscar = new Button("Buscar Solicitud de Compra");
         botonBuscar.setBackground(new Color(230, 240, 255));
-        botonIngresar=new Button("Añadir Solicitud de Compra");
+        botonIngresar = new Button("Añadir Solicitud de Compra");
         botonIngresar.setBackground(new Color(230, 240, 255));
-        botonListar=new Button("Listar Solicitud de Compra");
+        botonListar = new Button("Listar Solicitud de Compra");
         botonListar.setBackground(new Color(230, 240, 255));
-        atras=new Button("Atras");
+        atras = new Button("Atrás");
         atras.setBackground(new Color(230, 240, 255));
+
         botonBuscar.setFont(new Font("Arial", Font.PLAIN, 16));
         botonIngresar.setFont(new Font("Arial", Font.PLAIN, 16));
         botonListar.setFont(new Font("Arial", Font.PLAIN, 16));
         atras.setFont(new Font("Arial", Font.PLAIN, 16));
+
         panelFuncional.add(botonBuscar);
         panelFuncional.add(botonIngresar);
         panelFuncional.add(botonListar);
         panelFuncional.add(atras);
 
-        Panel panelPrincipal = new Panel(new FlowLayout(FlowLayout.CENTER,20,20));
+        Panel panelPrincipal = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 20));
         panelPrincipal.add(panelFuncional);
-        add(encabezado,BorderLayout.NORTH);
-        add(panelPrincipal,BorderLayout.CENTER);
 
-        BuscarSolicitud buscarSolicitud = new BuscarSolicitud();
+        add(encabezado, BorderLayout.NORTH);
+        add(panelPrincipal, BorderLayout.CENTER);
 
-        botonBuscar.addActionListener(new ActionListener() {
-            @Override
+        ventanaAñadir = new AñadirSolicitud(this, listaSolicitudes, ventanaIni.getListaProductosFisicos(), ventanaIni.getListaServicios());
+        ventanaListar = new ListarSolicitud(this, listaSolicitudes);
+        ventanaBuscar = new BuscarSolicitud(this, listaSolicitudes);
+
+        // Acción botón Añadir
+        botonIngresar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                buscarSolicitud.setVisible(true);
+                ventanaAñadir.actualizarLista(); // <- Actualiza antes de mostrar
+                ventanaAñadir.setVisible(true);
                 setVisible(false);
             }
         });
+
+        // Acción botón Listar
+        botonListar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ventanaListar.mostrar();
+                ventanaListar.setVisible(true);
+                setVisible(false);
+            }
+        });
+
+        // Acción botón Buscar
+        botonBuscar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ventanaBuscar.setVisible(true);
+                setVisible(false);
+            }
+        });
+
+        // Acción botón Atrás
         atras.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 ventanaIni.setVisible(true);
                 setVisible(false);
@@ -83,8 +116,33 @@ public class VentanaSolicitud extends Frame{
         });
 
         setVisible(false);
-
     }
+
+    public String mostrarProductosYServiciosDisponibles() {
+        StringBuilder contenido = new StringBuilder();
+
+        List<ProductoFisico> productos = ventanaIni.listaProductosFisicos;
+        List<Servicio> servicios = ventanaIni.listaServicios;
+
+        contenido.append("=== PRODUCTOS DISPONIBLES ===\n");
+        if (productos.isEmpty()) {
+            contenido.append("No hay productos registrados.\n");
+        } else {
+            for (ProductoFisico p : productos) {
+                contenido.append(p.toString()).append("\n");
+            }
+        }
+
+        contenido.append("\n=== SERVICIOS DISPONIBLES ===\n");
+        if (servicios.isEmpty()) {
+            contenido.append("No hay servicios registrados.\n");
+        } else {
+            for (Servicio s : servicios) {
+                contenido.append(s.toString()).append("\n");
+            }
+        }
+
+        return contenido.toString();
+    }
+
 }
-
-
