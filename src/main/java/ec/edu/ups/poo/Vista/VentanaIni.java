@@ -12,6 +12,7 @@
     import java.awt.event.WindowAdapter;
     import java.awt.event.WindowEvent;
     import java.util.ArrayList;
+    import java.util.Collection;
 
     public class VentanaIni extends Frame {
 
@@ -32,6 +33,14 @@
 
         public ArrayList<Servicio> getListaServicios() {
             return listaServicios;
+        }
+
+        public ArrayList<Persona> getListaEmpleados() {
+            return listaEmpleados;
+        }
+
+        public ArrayList<Persona> getListaProveedores() {
+            return listaProveedores;
         }
 
         public VentanaIni() {
@@ -121,5 +130,4 @@
 
             setVisible(true);
         }
-
     }

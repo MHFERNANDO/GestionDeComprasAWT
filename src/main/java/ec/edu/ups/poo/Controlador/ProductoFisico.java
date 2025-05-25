@@ -17,6 +17,10 @@ public class ProductoFisico {
         this.presentacion = presentacion;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -25,7 +29,6 @@ public class ProductoFisico {
         return precio;
     }
 
-
     @Override
     public String toString() {
         return "Producto: " + nombre + " | ID: " + id + " | Precio: $" + precio +
@@ -33,5 +36,6 @@ public class ProductoFisico {
                 " | Presentación: " + presentacion;
     }
 }
+
 
 
