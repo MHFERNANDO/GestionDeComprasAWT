@@ -26,12 +26,27 @@ public class VentanaServicio extends Frame {
         this.ventanaAnterior = ventanaAnterior;
         this.ventanaIni = ventanaIni;
 
+        configurarVentana();
+        inicializarComponentes();
+        agregarEventos();
+    }
+
+    private void configurarVentana() {
         setTitle("Registrar Servicio");
         setSize(500, 500);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 255));
+        setVisible(false);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                dispose();
+            }
+        });
+    }
 
+    private void inicializarComponentes() {
+        // Título
         Label titulo = new Label("Registro de Servicio");
         titulo.setFont(new Font("Arial", Font.BOLD, 22));
         titulo.setForeground(new Color(30, 30, 30));
@@ -40,7 +55,9 @@ public class VentanaServicio extends Frame {
         Panel panelTitulo = new Panel(new FlowLayout(FlowLayout.CENTER));
         panelTitulo.setBackground(new Color(230, 240, 255));
         panelTitulo.add(titulo);
+        add(panelTitulo, BorderLayout.NORTH);
 
+        // Formulario
         Panel panelForm = new Panel(new GridLayout(7, 2, 10, 15));
         panelForm.setBackground(new Color(245, 245, 255));
         panelForm.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -68,6 +85,9 @@ public class VentanaServicio extends Frame {
         panelForm.add(new Label("Proveedor:"));
         panelForm.add(choiceProveedor);
 
+        add(panelForm, BorderLayout.CENTER);
+
+        // Botones
         btnRegistrar = new Button("Registrar");
         btnRegistrar.setFont(new Font("Arial", Font.PLAIN, 14));
 
@@ -79,43 +99,13 @@ public class VentanaServicio extends Frame {
         panelBotones.add(btnRegistrar);
         panelBotones.add(btnAtras);
 
-        add(panelTitulo, BorderLayout.NORTH);
-        add(panelForm, BorderLayout.CENTER);
         add(panelBotones, BorderLayout.SOUTH);
+    }
 
+    private void agregarEventos() {
         btnRegistrar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    int id = Integer.parseInt(txtId.getText().trim());
-                    String nombre = txtNombre.getText().trim();
-                    double precio = Double.parseDouble(txtPrecio.getText().trim());
-                    int cantidad = Integer.parseInt(txtCantidad.getText().trim());
-                    String tipo = txtTipo.getText().trim();
-                    String categoria = txtCategoria.getText().trim();
-
-                    int indexProveedor = choiceProveedor.getSelectedIndex();
-                    Persona proveedorSeleccionado = ventanaIni.getListaProveedores().get(indexProveedor);
-
-                    Servicio servicio = new Servicio(id, nombre, precio, cantidad, tipo, categoria, proveedorSeleccionado);
-                    ventanaIni.getListaServicios().add(servicio);
-
-                    mostrarDialogo("Servicio registrado correctamente.");
-
-                    txtId.setText("");
-                    txtNombre.setText("");
-                    txtPrecio.setText("");
-                    txtCantidad.setText("");
-                    txtTipo.setText("");
-                    txtCategoria.setText("");
-                    if (choiceProveedor.getItemCount() > 0) {
-                        choiceProveedor.select(0);
-                    }
-
-                } catch (NumberFormatException ex) {
-                    mostrarDialogo("Error: asegúrese de que ID, precio y cantidad sean numéricos.");
-                } catch (IndexOutOfBoundsException ex) {
-                    mostrarDialogo("Error: Debes seleccionar un proveedor.");
-                }
+                registrarServicio();
             }
         });
 
@@ -125,32 +115,43 @@ public class VentanaServicio extends Frame {
                 setVisible(false);
             }
         });
-
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-                dispose();
-            }
-        });
-
-        setVisible(false);
     }
 
-    private void actualizarChoiceProveedores() {
-        choiceProveedor.removeAll();
-        for (Persona p : ventanaIni.getListaProveedores()) {
-            choiceProveedor.add(p.getNombre() + " - " + p.getCedula());
+    private void registrarServicio() {
+        try {
+            int id = Integer.parseInt(txtId.getText().trim());
+            String nombre = txtNombre.getText().trim();
+            double precio = Double.parseDouble(txtPrecio.getText().trim());
+            int cantidad = Integer.parseInt(txtCantidad.getText().trim());
+            String tipo = txtTipo.getText().trim();
+            String categoria = txtCategoria.getText().trim();
+
+            int indexProveedor = choiceProveedor.getSelectedIndex();
+            Persona proveedorSeleccionado = ventanaIni.getListaProveedores().get(indexProveedor);
+
+            Servicio servicio = new Servicio(id, nombre, precio, cantidad, tipo, categoria, proveedorSeleccionado);
+            ventanaIni.getListaServicios().add(servicio);
+
+            mostrarDialogo("Servicio registrado correctamente.");
+            limpiarCampos();
+
+        } catch (NumberFormatException ex) {
+            mostrarDialogo("Error: asegúrese de que ID, precio y cantidad sean numéricos.");
+        } catch (IndexOutOfBoundsException ex) {
+            mostrarDialogo("Error: Debes seleccionar un proveedor.");
         }
+    }
+
+    private void limpiarCampos() {
+        txtId.setText("");
+        txtNombre.setText("");
+        txtPrecio.setText("");
+        txtCantidad.setText("");
+        txtTipo.setText("");
+        txtCategoria.setText("");
         if (choiceProveedor.getItemCount() > 0) {
             choiceProveedor.select(0);
         }
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        if (visible) {
-            actualizarChoiceProveedores(); // <-- actualiza los proveedores antes de mostrar
-        }
-        super.setVisible(visible);
     }
 
     private void mostrarDialogo(String mensaje) {
@@ -171,5 +172,23 @@ public class VentanaServicio extends Frame {
         dialogo.add(lbl);
         dialogo.add(btnCerrar);
         dialogo.setVisible(true);
+    }
+
+    public void actualizarChoiceProveedores() {
+        choiceProveedor.removeAll();
+        for (Persona p : ventanaIni.getListaProveedores()) {
+            choiceProveedor.add(p.getNombre() + " - " + p.getCedula());
+        }
+        if (choiceProveedor.getItemCount() > 0) {
+            choiceProveedor.select(0);
+        }
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        if (visible) {
+            actualizarChoiceProveedores();
+        }
+        super.setVisible(visible);
     }
 }

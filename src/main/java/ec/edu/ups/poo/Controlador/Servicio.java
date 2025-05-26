@@ -52,13 +52,8 @@ public class Servicio {
 
     @Override
     public String toString() {
-        return "Servicio{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", precioUnitario=" + precioUnitario +
-                ", cantidad=" + cantidad +
-                ", tipo='" + tipo + '\'' +
-                ", categoria='" + categoria + '\'' +
-                '}';
+        return String.format("Servicio: %-20s | ID: %d | Precio: $%.2f | Cantidad: %d | Tipo: %s | Categoría: %s",
+                nombre, id, precioUnitario, cantidad, tipo, categoria);
     }
+
 }

@@ -13,7 +13,6 @@ public class VentanaProdu extends Frame {
 
     private VentanaIni ventanaIni;
 
-    // Ventanas auxiliares como atributos para evitar recreación
     private BuscarProducto buscarProducto;
     private VentanaTipoProducto ventanaAgregarProducto;
     private VentanaListaProducto ventanaListaProducto;
@@ -22,10 +21,10 @@ public class VentanaProdu extends Frame {
         this.ventanaIni = ventanaIni;
 
         setTitle("Gestión de Productos");
-        setSize(500, 500);
+        setSize(600, 450);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
-        setBackground(new Color(245, 245, 245));
+        setBackground(new Color(245, 250, 255));
 
         crearEncabezado();
         crearBotones();
@@ -44,9 +43,9 @@ public class VentanaProdu extends Frame {
 
     private void crearEncabezado() {
         Label titulo = new Label("GESTIÓN DE PRODUCTOS");
-        titulo.setFont(new Font("Arial", Font.BOLD, 24));
+        titulo.setFont(new Font("Arial", Font.BOLD, 26));
         titulo.setAlignment(Label.CENTER);
-        titulo.setForeground(new Color(40, 40, 100));
+        titulo.setForeground(new Color(30, 40, 90));
 
         Panel encabezado = new Panel();
         encabezado.setBackground(new Color(210, 230, 250));
@@ -60,22 +59,22 @@ public class VentanaProdu extends Frame {
         botonBuscar = new Button("Buscar Productos");
         botonIngresar = new Button("Añadir Productos");
         botonListar = new Button("Listar Productos");
-        botonAtras = new Button("Atrás");
+        botonAtras = new Button("⬅ Atrás");
 
         Button[] botones = {botonBuscar, botonIngresar, botonListar, botonAtras};
-        Panel panelFuncional = new Panel(new GridLayout(4, 1, 15, 15));
-        panelFuncional.setFont(new Font("Arial", Font.PLAIN, 18));
-        panelFuncional.setBackground(new Color(245, 245, 255));
-        panelFuncional.setPreferredSize(new Dimension(300, 200));
+        Panel panelFuncional = new Panel(new GridLayout(4, 1, 20, 20));
+        panelFuncional.setBackground(new Color(235, 245, 255));
+        panelFuncional.setPreferredSize(new Dimension(300, 250));
 
-        for (int i = 0; i < botones.length; i++) {
-            botones[i].setFont(new Font("Arial", Font.BOLD, 16));
-            botones[i].setBackground(new Color(230, 240, 255));
-            botones[i].setForeground(Color.BLACK);
-            panelFuncional.add(botones[i]);
+        for (Button btn : botones) {
+            btn.setFont(new Font("Arial", Font.BOLD, 16));
+            btn.setBackground(new Color(200, 220, 255));
+            btn.setForeground(new Color(20, 20, 20));
+            panelFuncional.add(btn);
         }
 
         Panel panelCentro = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 30));
+        panelCentro.setBackground(new Color(245, 250, 255));
         panelCentro.add(panelFuncional);
         add(panelCentro, BorderLayout.CENTER);
     }

@@ -27,23 +27,42 @@ public class VentanaProductoFisico extends Frame {
         this.ventanaIni = ventanaIni;
 
         setTitle("Registrar Producto Físico");
-        setSize(500, 500);
+        setSize(600, 500);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
-        setBackground(new Color(245, 245, 255));
+        setLayout(new BorderLayout(10, 10));
+        setBackground(new Color(245, 250, 255));
 
-        Label titulo = new Label("Registro de Producto Físico");
-        titulo.setFont(new Font("Arial", Font.BOLD, 22));
-        titulo.setForeground(new Color(30, 30, 30));
+        crearTitulo();
+        crearFormulario();
+        crearBotones();
+        configurarEventos();
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                dispose();
+            }
+        });
+
+        setVisible(false);
+    }
+
+    private void crearTitulo() {
+        Label titulo = new Label(" Registro de Producto Físico");
+        titulo.setFont(new Font("Arial", Font.BOLD, 24));
         titulo.setAlignment(Label.CENTER);
+        titulo.setForeground(new Color(30, 40, 90));
 
         Panel panelTitulo = new Panel(new FlowLayout(FlowLayout.CENTER));
-        panelTitulo.setBackground(new Color(230, 240, 255));
+        panelTitulo.setBackground(new Color(210, 230, 250));
         panelTitulo.add(titulo);
+        add(panelTitulo, BorderLayout.NORTH);
+    }
 
-        Panel panelForm = new Panel(new GridLayout(7, 2, 10, 15));
-        panelForm.setBackground(new Color(245, 245, 255));
+    private void crearFormulario() {
+        Panel panelForm = new Panel(new GridLayout(7, 2, 12, 15));
+        panelForm.setBackground(new Color(245, 250, 255));
         panelForm.setFont(new Font("Arial", Font.PLAIN, 16));
+        panelForm.setPreferredSize(new Dimension(400, 300));
 
         txtId = new TextField(25);
         txtNombre = new TextField(25);
@@ -53,36 +72,44 @@ public class VentanaProductoFisico extends Frame {
         txtPresentacion = new TextField(25);
         choiceProveedor = new Choice();
 
-        panelForm.add(new Label("ID del Producto:"));
+        panelForm.add(new Label(" ID del Producto:"));
         panelForm.add(txtId);
-        panelForm.add(new Label("Nombre:"));
+        panelForm.add(new Label(" Nombre:"));
         panelForm.add(txtNombre);
-        panelForm.add(new Label("Precio Unitario:"));
+        panelForm.add(new Label(" Precio Unitario:"));
         panelForm.add(txtPrecio);
-        panelForm.add(new Label("Cantidad:"));
+        panelForm.add(new Label(" Cantidad:"));
         panelForm.add(txtCantidad);
-        panelForm.add(new Label("Descripción:"));
+        panelForm.add(new Label(" Descripción:"));
         panelForm.add(txtDescripcion);
-        panelForm.add(new Label("Presentación:"));
+        panelForm.add(new Label(" Presentación:"));
         panelForm.add(txtPresentacion);
-        panelForm.add(new Label("Proveedor:"));
+        panelForm.add(new Label(" Proveedor:"));
         panelForm.add(choiceProveedor);
 
-        btnRegistrar = new Button("Registrar");
-        btnRegistrar.setFont(new Font("Arial", Font.PLAIN, 14));
+        Panel centro = new Panel(new FlowLayout(FlowLayout.CENTER));
+        centro.add(panelForm);
+        add(centro, BorderLayout.CENTER);
+    }
 
-        btnAtras = new Button("Atrás");
-        btnAtras.setFont(new Font("Arial", Font.PLAIN, 14));
+    private void crearBotones() {
+        btnRegistrar = new Button(" Registrar");
+        btnRegistrar.setFont(new Font("Arial", Font.BOLD, 14));
+        btnRegistrar.setBackground(new Color(200, 230, 255));
 
-        Panel panelBotones = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        btnAtras = new Button("⬅ Atrás");
+        btnAtras.setFont(new Font("Arial", Font.BOLD, 14));
+        btnAtras.setBackground(new Color(220, 220, 220));
+
+        Panel panelBotones = new Panel(new FlowLayout(FlowLayout.CENTER, 30, 15));
         panelBotones.setBackground(new Color(230, 240, 255));
         panelBotones.add(btnRegistrar);
         panelBotones.add(btnAtras);
 
-        add(panelTitulo, BorderLayout.NORTH);
-        add(panelForm, BorderLayout.CENTER);
         add(panelBotones, BorderLayout.SOUTH);
+    }
 
+    private void configurarEventos() {
         btnRegistrar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -99,7 +126,7 @@ public class VentanaProductoFisico extends Frame {
                     ProductoFisico producto = new ProductoFisico(id, nombre, precio, cantidad, descripcion, presentacion, proveedorSeleccionado);
                     ventanaIni.getListaProductosFisicos().add(producto);
 
-                    mostrarDialogo("Producto registrado correctamente.");
+                    mostrarDialogo(" Producto registrado correctamente.");
 
                     txtId.setText("");
                     txtNombre.setText("");
@@ -111,9 +138,9 @@ public class VentanaProductoFisico extends Frame {
                         choiceProveedor.select(0);
                     }
                 } catch (NumberFormatException ex) {
-                    mostrarDialogo("Error: Verifica que los campos numéricos tengan valores válidos.");
+                    mostrarDialogo(" Error: Verifica que los campos numéricos tengan valores válidos.");
                 } catch (IndexOutOfBoundsException ex) {
-                    mostrarDialogo("Error: Debes seleccionar un proveedor.");
+                    mostrarDialogo(" Error: Debes seleccionar un proveedor.");
                 }
             }
         });
@@ -124,14 +151,6 @@ public class VentanaProductoFisico extends Frame {
                 setVisible(false);
             }
         });
-
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-                dispose();
-            }
-        });
-
-        setVisible(false);
     }
 
     public void actualizarChoiceProveedores() {
@@ -144,28 +163,34 @@ public class VentanaProductoFisico extends Frame {
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
-            actualizarChoiceProveedores(); // <-- Aquí actualiza cada vez que se muestra
+            actualizarChoiceProveedores();
         }
         super.setVisible(visible);
     }
 
     private void mostrarDialogo(String mensaje) {
         Dialog dialogo = new Dialog(this, "Mensaje", true);
-        dialogo.setLayout(new FlowLayout());
-        dialogo.setSize(300, 100);
+        dialogo.setLayout(new BorderLayout());
+        dialogo.setSize(350, 120);
         dialogo.setLocationRelativeTo(this);
 
-        Label lbl = new Label(mensaje);
-        Button btnCerrar = new Button("OK");
+        Label lbl = new Label(mensaje, Label.CENTER);
+        lbl.setFont(new Font("Arial", Font.PLAIN, 14));
 
+        Button btnCerrar = new Button("Cerrar");
+        btnCerrar.setFont(new Font("Arial", Font.BOLD, 14));
+        btnCerrar.setBackground(new Color(220, 220, 250));
         btnCerrar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dialogo.setVisible(false);
             }
         });
 
-        dialogo.add(lbl);
-        dialogo.add(btnCerrar);
+        Panel panelBoton = new Panel();
+        panelBoton.add(btnCerrar);
+
+        dialogo.add(lbl, BorderLayout.CENTER);
+        dialogo.add(panelBoton, BorderLayout.SOUTH);
         dialogo.setVisible(true);
     }
 }

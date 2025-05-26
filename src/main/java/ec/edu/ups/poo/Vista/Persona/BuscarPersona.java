@@ -80,10 +80,9 @@ public class BuscarPersona extends Frame {
         panelCentro.add(panelRes);
 
         Panel panelBoton = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buscar = new Button("Buscar");
-        salir = new Button("Atras");
-        buscar.setFont(new Font("Arial", Font.PLAIN, 16));
-        salir.setFont(new Font("Arial", Font.PLAIN, 16));
+        buscar = crearBoton("Buscar");
+        salir = crearBoton("Atrás");
+
         panelBoton.setBackground(new Color(230, 240, 255));
         panelBoton.add(buscar);
         panelBoton.add(salir);
@@ -173,5 +172,14 @@ public class BuscarPersona extends Frame {
             else alto = medio - 1;
         }
         return -1;
+    }
+
+    private Button crearBoton(String texto) {
+        Button boton = new Button(texto);
+        boton.setFont(new Font("Arial", Font.BOLD, 16));
+        boton.setBackground(new Color(180, 210, 255));
+        boton.setForeground(Color.BLACK);
+        boton.setPreferredSize(new Dimension(120, 40));
+        return boton;
     }
 }

@@ -12,7 +12,6 @@ public class VentanaListaPersona extends Frame {
 
     private TextArea textArea;
     private Button btnVolver;
-
     private VentanaIni ventanaIni;
     private VentanaPersona ventanaAnterior;
 
@@ -21,16 +20,31 @@ public class VentanaListaPersona extends Frame {
         this.ventanaAnterior = ventanaAnterior;
 
         setTitle("Lista de Personas");
-        setSize(500, 500);
-        setLayout(new BorderLayout());
+        setSize(600, 500);
+        setLayout(new BorderLayout(10, 10));
         setLocationRelativeTo(null);
+        setBackground(new Color(245, 250, 255));
 
+        // Título
+        Label lblTitulo = new Label("Personas Registradas", Label.CENTER);
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+        add(lblTitulo, BorderLayout.NORTH);
+
+        // Área de texto
         textArea = new TextArea();
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         textArea.setEditable(false);
         add(textArea, BorderLayout.CENTER);
 
+        // Botón de volver
+        Panel panelBoton = new Panel(new FlowLayout(FlowLayout.CENTER));
         btnVolver = new Button("Volver");
-        add(btnVolver, BorderLayout.SOUTH);
+        btnVolver.setFont(new Font("Arial", Font.BOLD, 16));
+        btnVolver.setBackground(new Color(180, 210, 255));
+        btnVolver.setPreferredSize(new Dimension(120, 35));
+        panelBoton.setBackground(new Color(230, 240, 255));
+        panelBoton.add(btnVolver);
+        add(panelBoton, BorderLayout.SOUTH);
 
         btnVolver.addActionListener(e -> {
             ventanaAnterior.setVisible(true);
@@ -40,7 +54,6 @@ public class VentanaListaPersona extends Frame {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
-                System.exit(0);
             }
         });
 
@@ -53,24 +66,25 @@ public class VentanaListaPersona extends Frame {
     }
 
     private void mostrarListas(ArrayList<Persona> empleados, ArrayList<Persona> proveedores) {
-        String texto = "=== EMPLEADOS ===\n";
+        StringBuilder texto = new StringBuilder();
+        texto.append("=== EMPLEADOS ===\n");
         if (empleados.isEmpty()) {
-            texto += "No hay empleados registrados.\n";
+            texto.append("No hay empleados registrados.\n");
         } else {
             for (Persona p : empleados) {
-                texto += p.toString() + "\n";
+                texto.append(p).append("\n");
             }
         }
 
-        texto += "\n=== PROVEEDORES ===\n";
+        texto.append("\n=== PROVEEDORES ===\n");
         if (proveedores.isEmpty()) {
-            texto += "No hay proveedores registrados.\n";
+            texto.append("No hay proveedores registrados.\n");
         } else {
             for (Persona p : proveedores) {
-                texto += p.toString() + "\n";
+                texto.append(p).append("\n");
             }
         }
 
-        textArea.setText(texto);
+        textArea.setText(texto.toString());
     }
 }

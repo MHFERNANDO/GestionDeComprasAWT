@@ -25,44 +25,82 @@ public class AñadirSolicitud extends Frame {
     private List<ProductoFisico> listaProductosFisicos;
     private List<Servicio> listaServicios;
 
-    public AñadirSolicitud(VentanaSolicitud ventanaAnterior, List<SolicitudCompra> solicitudes, List<ProductoFisico> listaProductosFisicos, List<Servicio> listaServicios) {
+    public AñadirSolicitud(VentanaSolicitud ventanaAnterior, List<SolicitudCompra> solicitudes,
+                           List<ProductoFisico> listaProductosFisicos, List<Servicio> listaServicios) {
         this.ventanaAnterior = ventanaAnterior;
         this.solicitudes = solicitudes;
         this.listaProductosFisicos = listaProductosFisicos;
         this.listaServicios = listaServicios;
 
+        configurarVentana();
+        inicializarComponentes();
+        agregarEventos();
+    }
+
+    private void configurarVentana() {
         setTitle("Añadir Solicitud de Compra");
         setSize(600, 500);
-        setLayout(new GridLayout(8, 2));
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout(10, 10));
+        setBackground(new Color(245, 245, 245));
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                dispose();
+            }
+        });
+
+        setVisible(false);
+    }
+
+    private void inicializarComponentes() {
+        // Panel principal
+        Panel panelCampos = new Panel(new GridLayout(6, 2, 10, 10));
+        panelCampos.setBackground(new Color(250, 250, 250));
+        panelCampos.setFont(new Font("Arial", Font.PLAIN, 14));
 
         campoNombre = new TextField();
         campoCedula = new TextField();
-        areaProductos = new TextArea();
-        areaProductos.setEditable(false);
-
         campoProductoSeleccionado = new TextField();
         campoCantidad = new TextField();
 
+        areaProductos = new TextArea();
+        areaProductos.setEditable(false);
+        areaProductos.setFont(new Font("Monospaced", Font.PLAIN, 13));
+
+        panelCampos.add(new Label("Nombre Solicitante:"));
+        panelCampos.add(campoNombre);
+        panelCampos.add(new Label("Cédula Solicitante:"));
+        panelCampos.add(campoCedula);
+        panelCampos.add(new Label("Producto o Servicio a Solicitar:"));
+        panelCampos.add(campoProductoSeleccionado);
+        panelCampos.add(new Label("Cantidad:"));
+        panelCampos.add(campoCantidad);
+        panelCampos.add(new Label("Productos/Servicios Disponibles:"));
+
+        Panel panelArea = new Panel(new BorderLayout());
+        panelArea.add(areaProductos, BorderLayout.CENTER);
+        panelCampos.add(panelArea);
+
+        // Panel de botones
         botonGuardar = new Button("Guardar");
         botonAtras = new Button("Atrás");
 
-        add(new Label("Nombre Solicitante:"));
-        add(campoNombre);
-        add(new Label("Cédula Solicitante:"));
-        add(campoCedula);
+        botonGuardar.setFont(new Font("Arial", Font.BOLD, 14));
+        botonGuardar.setBackground(new Color(200, 230, 200));
 
-        add(new Label("Productos disponibles:"));
-        add(areaProductos);
+        botonAtras.setFont(new Font("Arial", Font.PLAIN, 14));
+        botonAtras.setBackground(new Color(230, 200, 200));
 
-        add(new Label("Producto/Servicio a Solicitar:"));
-        add(campoProductoSeleccionado);
-        add(new Label("Cantidad:"));
-        add(campoCantidad);
+        Panel panelBotones = new Panel(new FlowLayout());
+        panelBotones.add(botonGuardar);
+        panelBotones.add(botonAtras);
 
-        add(botonGuardar);
-        add(botonAtras);
+        add(panelCampos, BorderLayout.CENTER);
+        add(panelBotones, BorderLayout.SOUTH);
+    }
 
+    private void agregarEventos() {
         botonGuardar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 String nombre = campoNombre.getText().trim();
@@ -73,50 +111,46 @@ public class AñadirSolicitud extends Frame {
                 try {
                     cantidad = Integer.parseInt(campoCantidad.getText().trim());
                 } catch (NumberFormatException e) {
-                    System.out.println("Cantidad inválida.");
+                    mostrarMensaje("Cantidad inválida. Debe ser un número entero.");
                     return;
                 }
 
-                if (!nombre.isEmpty() && !cedula.isEmpty() && !producto.isEmpty() && cantidad > 0) {
-                    SolicitudCompra nueva = new SolicitudCompra(nombre, cedula);
+                if (nombre.isEmpty() || cedula.isEmpty() || producto.isEmpty() || cantidad <= 0) {
+                    mostrarMensaje("Por favor, complete todos los campos correctamente.");
+                    return;
+                }
 
-                    // Buscar en productos
-                    boolean encontrado = false;
-                    for (ProductoFisico p : listaProductosFisicos) {
-                        if (p.getNombre().equalsIgnoreCase(producto)) {
-                            DetalleCompra detalle = new DetalleCompra(p.getNombre(), p.getPrecioUnitario(), cantidad);
-                            nueva.agregarDetalle(detalle);
+                SolicitudCompra nueva = new SolicitudCompra(nombre, cedula);
+                boolean encontrado = false;
+
+                for (ProductoFisico p : listaProductosFisicos) {
+                    if (p.getNombre().equalsIgnoreCase(producto)) {
+                        nueva.agregarDetalle(new DetalleCompra(p.getNombre(), p.getPrecioUnitario(), cantidad));
+                        encontrado = true;
+                        break;
+                    }
+                }
+
+                if (!encontrado) {
+                    for (Servicio s : listaServicios) {
+                        if (s.getNombre().equalsIgnoreCase(producto)) {
+                            nueva.agregarDetalle(new DetalleCompra(s.getNombre(), s.getPrecioUnitario(), cantidad));
                             encontrado = true;
                             break;
                         }
                     }
+                }
 
-                    // Buscar en servicios si no se encontró en productos
-                    if (!encontrado) {
-                        for (Servicio s : listaServicios) {
-                            if (s.getNombre().equalsIgnoreCase(producto)) {
-                                DetalleCompra detalle = new DetalleCompra(s.getNombre(), s.getPrecioUnitario(), cantidad);
-                                nueva.agregarDetalle(detalle);
-                                encontrado = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (encontrado) {
-                        solicitudes.add(nueva);
-                        campoNombre.setText("");
-                        campoCedula.setText("");
-                        campoProductoSeleccionado.setText("");
-                        campoCantidad.setText("");
-                        System.out.println("Solicitud añadida:\n" + nueva);
-                    } else {
-                        System.out.println("Producto o servicio no encontrado.");
-                    }
+                if (encontrado) {
+                    solicitudes.add(nueva);
+                    limpiarCampos();
+                    mostrarMensaje("Solicitud añadida correctamente.");
+                    System.out.println("Solicitud añadida:\n" + nueva);
+                } else {
+                    mostrarMensaje("Producto o servicio no encontrado.");
                 }
             }
         });
-
 
         botonAtras.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -124,19 +158,38 @@ public class AñadirSolicitud extends Frame {
                 setVisible(false);
             }
         });
+    }
 
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-                dispose();
-                System.exit(0);
+    private void limpiarCampos() {
+        campoNombre.setText("");
+        campoCedula.setText("");
+        campoProductoSeleccionado.setText("");
+        campoCantidad.setText("");
+    }
+
+    private void mostrarMensaje(String mensaje) {
+        Dialog dialogo = new Dialog(this, "Mensaje", true);
+        dialogo.setLayout(new FlowLayout());
+        dialogo.setSize(300, 100);
+        dialogo.setLocationRelativeTo(this);
+
+        Label lbl = new Label(mensaje);
+        lbl.setFont(new Font("Arial", Font.PLAIN, 14));
+        dialogo.add(lbl);
+
+        Button btnCerrar = new Button("Cerrar");
+        btnCerrar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dialogo.setVisible(false);
             }
         });
+        dialogo.add(btnCerrar);
 
-        setVisible(false);
+        dialogo.setVisible(true);
     }
+
     public void actualizarLista() {
         areaProductos.setText(""); // Limpiar
-
         for (ProductoFisico p : listaProductosFisicos) {
             areaProductos.append("Producto: " + p.getNombre() + " - $" + p.getPrecioUnitario() + "\n");
         }
@@ -148,9 +201,8 @@ public class AñadirSolicitud extends Frame {
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
-            actualizarLista(); // siempre actualiza antes de mostrarse
+            actualizarLista();
         }
         super.setVisible(visible);
     }
-
 }
