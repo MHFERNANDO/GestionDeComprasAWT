@@ -2,6 +2,7 @@ package ec.edu.ups.poo.Controlador;
 
 import java.util.ArrayList;
 import java.util.List;
+import ec.edu.ups.poo.Enums.EstadoSolicitud;
 
 public class SolicitudCompra {
     private static int contador = 1;
@@ -9,14 +10,14 @@ public class SolicitudCompra {
     private String nombreSolicitante;
     private String cedulaSolicitante;
     private List<DetalleCompra> detalles;
-    private String estado;
+    private EstadoSolicitud estado;
 
     public SolicitudCompra(String nombreSolicitante, String cedulaSolicitante) {
         this.id = contador++;
         this.nombreSolicitante = nombreSolicitante;
         this.cedulaSolicitante = cedulaSolicitante;
         this.detalles = new ArrayList<>();
-        this.estado = "Pendiente";
+        this.estado = EstadoSolicitud.PENDIENTE;
     }
 
     public void agregarDetalle(DetalleCompra detalle) {
@@ -35,11 +36,11 @@ public class SolicitudCompra {
         return id;
     }
 
-    public String getEstado() {
+    public EstadoSolicitud getEstado() {
         return estado;
     }
 
-    public void setEstado(String nuevoEstado) {
+    public void setEstado(EstadoSolicitud nuevoEstado) {
         this.estado = nuevoEstado;
     }
 
@@ -68,23 +69,26 @@ public class SolicitudCompra {
 
     @Override
     public String toString() {
-        String texto = "\n====== SOLICITUD DE COMPRA ======\n";
-        texto += "ID           : " + id + "\n";
-        texto += "Solicitante  : " + nombreSolicitante + "\n";
-        texto += "Cédula       : " + cedulaSolicitante + "\n";
-        texto += "Estado       : " + estado + "\n";
+        StringBuilder texto = new StringBuilder();
+        texto.append("\n========== SOLICITUD DE COMPRA ==========\n");
+        texto.append(String.format("ID           : %d%n", id));
+        texto.append(String.format("Solicitante  : %s%n", nombreSolicitante));
+        texto.append(String.format("Cédula       : %s%n", cedulaSolicitante));
+        texto.append(String.format("Estado       : %s%n", estado.name()));
 
         if (detalles.isEmpty()) {
-            texto += ">>> No hay productos agregados.\n";
+            texto.append(">>> No hay productos agregados.\n");
         } else {
-            texto += ">>> Detalles:\n";
+            texto.append(">>> Detalles de compra:\n");
             for (DetalleCompra detalle : detalles) {
-                texto += detalle.toString();
+                texto.append(detalle.toString());
             }
-            texto += "TOTAL: $" + String.format("%.2f", calcularTotal()) + "\n";
+            texto.append("-----------------------------------------\n");
+            texto.append(String.format("TOTAL A PAGAR: $%.2f%n", calcularTotal()));
         }
 
-        texto += "=================================\n";
-        return texto;
+        texto.append("=========================================\n");
+        return texto.toString();
     }
+
 }

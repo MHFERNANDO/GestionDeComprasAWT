@@ -21,31 +21,43 @@ public class VentanaListaProducto extends Frame {
         this.ventanaIni = ventanaIni;
 
         setTitle("Lista de Productos y Servicios");
-        setSize(600, 500);
+        setSize(700, 550);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-        setBackground(new Color(245, 245, 255));
+        setBackground(new Color(245, 250, 255));
 
         Label titulo = new Label("Productos y Servicios Registrados");
-        titulo.setFont(new Font("Arial", Font.BOLD, 20));
+        titulo.setFont(new Font("Arial", Font.BOLD, 22));
         titulo.setAlignment(Label.CENTER);
+        titulo.setBackground(new Color(220, 235, 255));
+        titulo.setForeground(new Color(30, 30, 60));
         add(titulo, BorderLayout.NORTH);
 
         areaListado = new TextArea();
         areaListado.setEditable(false);
         areaListado.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        areaListado.setBackground(new Color(255, 255, 255));
+        areaListado.setForeground(new Color(30, 30, 30));
+        areaListado.setCursor(new Cursor(Cursor.TEXT_CURSOR));
         add(areaListado, BorderLayout.CENTER);
 
-        btnAtras = new Button("Atrás");
-        btnAtras.setFont(new Font("Arial", Font.PLAIN, 14));
-        Panel panelBoton = new Panel(new FlowLayout());
+        btnAtras = new Button("⬅ Atrás");
+        btnAtras.setFont(new Font("Arial", Font.BOLD, 14));
+        btnAtras.setBackground(new Color(180, 200, 255));
+        btnAtras.setForeground(Color.BLACK);
+        btnAtras.setPreferredSize(new Dimension(100, 35));
+
+        Panel panelBoton = new Panel(new FlowLayout(FlowLayout.CENTER));
         panelBoton.setBackground(new Color(230, 240, 255));
         panelBoton.add(btnAtras);
         add(panelBoton, BorderLayout.SOUTH);
 
-        btnAtras.addActionListener(e -> {
-            ventanaAnterior.setVisible(true);
-            setVisible(false);
+        btnAtras.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ventanaAnterior.setVisible(true);
+                setVisible(false);
+            }
         });
 
         addWindowListener(new WindowAdapter() {
@@ -76,12 +88,13 @@ public class VentanaListaProducto extends Frame {
                 Persona proveedor = p.getProveedor();
                 String nombreProveedor = (proveedor != null) ? proveedor.getNombre() : "No asignado";
                 areaListado.append("ID: " + p.getId() +
-                        ", Nombre: " + p.getNombre() +
-                        ", Precio: $" + p.getPrecioUnitario() +
-                        ", Cantidad: " + p.getCantidad() +
-                        ", Descripción: " + p.getDescripcion() +
-                        ", Presentación: " + p.getPresentacion() +
-                        ", Proveedor: " + nombreProveedor + "\n");
+                        " | Nombre: " + p.getNombre() +
+                        " | Precio: $" + String.format("%.2f", p.getPrecioUnitario()) +
+                        " | Cantidad: " + p.getCantidad() +
+                        " | Presentación: " + p.getPresentacion() +
+                        "\nDescripción: " + p.getDescripcion() +
+                        "\nProveedor: " + nombreProveedor + "\n");
+                areaListado.append("---------------------------------------------\n");
             }
         }
 
@@ -93,12 +106,13 @@ public class VentanaListaProducto extends Frame {
                 Persona proveedor = s.getProveedor();
                 String nombreProveedor = (proveedor != null) ? proveedor.getNombre() : "No asignado";
                 areaListado.append("ID: " + s.getId() +
-                        ", Nombre: " + s.getNombre() +
-                        ", Precio: $" + s.getPrecioUnitario() +
-                        ", Cantidad: " + s.getCantidad() +
-                        ", Tipo: " + s.getTipo() +
-                        ", Categoría: " + s.getCategoria() +
-                        ", Proveedor: " + nombreProveedor + "\n");
+                        " | Nombre: " + s.getNombre() +
+                        " | Precio: $" + String.format("%.2f", s.getPrecioUnitario()) +
+                        " | Cantidad: " + s.getCantidad() +
+                        " | Tipo: " + s.getTipo() +
+                        " | Categoría: " + s.getCategoria() +
+                        "\nProveedor: " + nombreProveedor + "\n");
+                areaListado.append("---------------------------------------------\n");
             }
         }
     }

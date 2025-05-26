@@ -53,13 +53,8 @@ public class ProductoFisico {
 
     @Override
     public String toString() {
-        return "ProductoFisico{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", precioUnitario=" + precioUnitario +
-                ", cantidad=" + cantidad +
-                ", descripcion='" + descripcion + '\'' +
-                ", presentacion='" + presentacion + '\'' +
-                '}';
+        return String.format("Producto: %-20s | ID: %d | Precio: $%.2f | Cantidad: %d | Presentación: %s | Descripción: %s",
+                nombre, id, precioUnitario, cantidad, presentacion, descripcion);
     }
+
 }

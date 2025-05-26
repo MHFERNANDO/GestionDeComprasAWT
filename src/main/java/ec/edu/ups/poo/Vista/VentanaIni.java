@@ -1,134 +1,140 @@
-    package ec.edu.ups.poo.Vista;
+package ec.edu.ups.poo.Vista;
 
-    import ec.edu.ups.poo.Controlador.Persona;
-    import ec.edu.ups.poo.Controlador.ProductoFisico;
-    import ec.edu.ups.poo.Controlador.Servicio;
-    import ec.edu.ups.poo.Vista.Persona.VentanaPersona;
-    import ec.edu.ups.poo.Vista.Productos.VentanaProdu;
-    import ec.edu.ups.poo.Vista.Solicitud.VentanaSolicitud;
-    import java.awt.*;
-    import java.awt.event.ActionEvent;
-    import java.awt.event.ActionListener;
-    import java.awt.event.WindowAdapter;
-    import java.awt.event.WindowEvent;
-    import java.util.ArrayList;
-    import java.util.Collection;
+import ec.edu.ups.poo.Controlador.Persona;
+import ec.edu.ups.poo.Controlador.ProductoFisico;
+import ec.edu.ups.poo.Controlador.Servicio;
+import ec.edu.ups.poo.Vista.Persona.VentanaPersona;
+import ec.edu.ups.poo.Vista.Productos.VentanaProdu;
+import ec.edu.ups.poo.Vista.Solicitud.VentanaSolicitud;
 
-    public class VentanaIni extends Frame {
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
 
-        public ArrayList<Persona> listaEmpleados = new ArrayList<>();
-        public ArrayList<Persona> listaProveedores = new ArrayList<>();
-        public ArrayList<ProductoFisico> listaProductosFisicos = new ArrayList<>();
-        public ArrayList<Servicio> listaServicios = new ArrayList<>();
+public class VentanaIni extends Frame {
 
+    public ArrayList<Persona> listaEmpleados = new ArrayList<>();
+    public ArrayList<Persona> listaProveedores = new ArrayList<>();
+    public ArrayList<ProductoFisico> listaProductosFisicos = new ArrayList<>();
+    public ArrayList<Servicio> listaServicios = new ArrayList<>();
 
-        private Button botonProveedor;
-        private Button botonProducto;
-        private Button botonDetalles;
-        private Button botonSalir;
+    private Button botonProveedor;
+    private Button botonProducto;
+    private Button botonSolicitud;
+    private Button botonSalir;
 
-        public ArrayList<ProductoFisico> getListaProductosFisicos() {
-            return listaProductosFisicos;
-        }
+    private VentanaPersona ventanaPersona;
+    private VentanaProdu ventanaProducto;
+    private VentanaSolicitud ventanaSolicitud;
 
-        public ArrayList<Servicio> getListaServicios() {
-            return listaServicios;
-        }
+    public VentanaIni() {
+        setTitle("Gestión de Compras");
+        setSize(500, 500);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout(10, 10));
+        setBackground(new Color(245, 245, 245));
 
-        public ArrayList<Persona> getListaEmpleados() {
-            return listaEmpleados;
-        }
+        inicializarComponentes();
+        inicializarVentanas();
+        configurarEventos();
 
-        public ArrayList<Persona> getListaProveedores() {
-            return listaProveedores;
-        }
-
-
-        public VentanaIni() {
-
-            setTitle("Detalles de Compra");
-            setSize(500, 500);
-            setLocationRelativeTo(null);
-            setBackground(new Color(245, 245, 245)); // Fondo claro
-            setLayout(new BorderLayout(10, 10));
-
-            // Encabezado
-            Label labelTitulo = new Label("GESTION DE COMPRAS");
-            labelTitulo.setFont(new Font("Arial", Font.BOLD, 24));
-            labelTitulo.setAlignment(Label.CENTER);
-            labelTitulo.setForeground(new Color(40, 40, 100));
-
-            Panel panelEncabezado = new Panel();
-            panelEncabezado.setBackground(new Color(210, 230, 250));
-            panelEncabezado.add(labelTitulo);
-
-            // Panel funcional con botones
-            Panel panelFuncional = new Panel(new GridLayout(5, 1, 10, 10));
-            panelFuncional.setBackground(new Color(245, 245, 255));
-            panelFuncional.setPreferredSize(new Dimension(300, 300));
-            panelFuncional.setFont(new Font("Arial", Font.PLAIN, 18));
-            panelFuncional.setForeground(Color.BLACK);
-
-            botonProveedor = new Button("Proveedores o Empleados");
-            botonProducto = new Button("Productos");
-            botonDetalles = new Button("Detalle de Compra");
-            botonSalir = new Button("Salir");
-
-            // Estilo uniforme para botones
-            Button[] botones = {botonProveedor, botonProducto, botonDetalles, botonSalir};
-            for (Button boton : botones) {
-                boton.setFont(new Font("Arial", Font.PLAIN, 16));
-                boton.setBackground(new Color(230,240,255));
-                panelFuncional.add(boton);
-            }
-
-
-            Panel panelCentral = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 20));
-            panelCentral.add(panelFuncional);
-
-            add(panelEncabezado, BorderLayout.NORTH);
-            add(panelCentral, BorderLayout.CENTER);
-
-            VentanaPersona ventanaPer = new VentanaPersona(this);
-            VentanaProdu ventanaProdu=new VentanaProdu(this);
-            VentanaSolicitud ventanaDetalle=new VentanaSolicitud(this);
-
-            botonProveedor.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ventanaPer.setVisible(true);
-                    setVisible(false);
-                }
-            });
-            botonProducto.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ventanaProdu.setVisible(true);
-                    setVisible(false);
-                }
-            });
-            botonDetalles.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ventanaDetalle.setVisible(true);
-                    setVisible(false);
-                }
-            });
-
-            botonSalir.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.exit(0);
-                }
-            });
-
-            // Evento para cerrar ventana correctamente
-            addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent we) {
-                    dispose();
-                }
-            });
-
-            setVisible(true);
-        }
+        setVisible(true);
     }
+
+    private void inicializarComponentes() {
+        // Encabezado
+        Label labelTitulo = new Label("GESTIÓN DE COMPRAS");
+        labelTitulo.setFont(new Font("Arial", Font.BOLD, 24));
+        labelTitulo.setAlignment(Label.CENTER);
+        labelTitulo.setForeground(new Color(40, 40, 100));
+
+        Panel panelEncabezado = new Panel();
+        panelEncabezado.setBackground(new Color(210, 230, 250));
+        panelEncabezado.add(labelTitulo);
+        add(panelEncabezado, BorderLayout.NORTH);
+
+        // Panel botones
+        Panel panelBotones = new Panel(new GridLayout(4, 1, 10, 10));
+        panelBotones.setPreferredSize(new Dimension(300, 300));
+        panelBotones.setBackground(new Color(245, 245, 255));
+
+        botonProveedor = crearBoton("Proveedores o Empleados");
+        botonProducto = crearBoton("Productos");
+        botonSolicitud = crearBoton("Solicitud de Compra");
+        botonSalir = crearBoton("Salir");
+
+        panelBotones.add(botonProveedor);
+        panelBotones.add(botonProducto);
+        panelBotones.add(botonSolicitud);
+        panelBotones.add(botonSalir);
+
+        Panel panelCentro = new Panel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        panelCentro.add(panelBotones);
+        add(panelCentro, BorderLayout.CENTER);
+    }
+
+    private Button crearBoton(String texto) {
+        Button boton = new Button(texto);
+        boton.setFont(new Font("Arial", Font.PLAIN, 16));
+        boton.setBackground(new Color(230, 240, 255));
+        return boton;
+    }
+
+    private void inicializarVentanas() {
+        ventanaPersona = new VentanaPersona(this);
+        ventanaProducto = new VentanaProdu(this);
+        ventanaSolicitud = new VentanaSolicitud(this);
+    }
+
+    private void configurarEventos() {
+        botonProveedor.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ventanaPersona.setVisible(true);
+                setVisible(false);
+            }
+        });
+
+        botonProducto.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ventanaProducto.setVisible(true);
+                setVisible(false);
+            }
+        });
+
+        botonSolicitud.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ventanaSolicitud.setVisible(true);
+                setVisible(false);
+            }
+        });
+
+        botonSalir.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                dispose(); // Solo cierra esta ventana
+            }
+        });
+    }
+
+    // Métodos públicos para acceder a las listas
+    public ArrayList<Persona> getListaEmpleados() {
+        return listaEmpleados;
+    }
+
+    public ArrayList<Persona> getListaProveedores() {
+        return listaProveedores;
+    }
+
+    public ArrayList<ProductoFisico> getListaProductosFisicos() {
+        return listaProductosFisicos;
+    }
+
+    public ArrayList<Servicio> getListaServicios() {
+        return listaServicios;
+    }
+}

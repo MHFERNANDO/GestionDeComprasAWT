@@ -17,8 +17,9 @@ public class DetalleCompra {
 
     @Override
     public String toString() {
-        return "Item: " + nombreItem + ", Precio: $" + precioUnitario +
-                ", Cantidad: " + cantidad + ", Total: $" + calcularTotal() + "\n";
+        return String.format("  - Item: %-20s | Precio: $%.2f | Cantidad: %d | Subtotal: $%.2f%n",
+                nombreItem, precioUnitario, cantidad, calcularTotal());
     }
+
 }
 

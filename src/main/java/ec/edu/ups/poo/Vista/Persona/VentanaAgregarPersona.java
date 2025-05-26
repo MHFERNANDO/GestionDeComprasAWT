@@ -1,6 +1,5 @@
 package ec.edu.ups.poo.Vista.Persona;
 
-import ec.edu.ups.poo.Controlador.Persona;
 import ec.edu.ups.poo.Vista.VentanaIni;
 
 import java.awt.*;
@@ -8,71 +7,67 @@ import java.awt.event.*;
 
 public class VentanaAgregarPersona extends Frame {
 
-    private TextField campoNombre;
-    private TextField campoCedula;
-    private Choice tipoPersona;
-    private Button botonGuardar;
-    private Button botonAtras;
+    private Button btnEmpleado;
+    private Button btnProveedor;
+    private Button btnAtras;
 
     private VentanaPersona ventanaPersona;
+    private VentanaIni ventanaIni;
 
     public VentanaAgregarPersona(VentanaPersona ventanaPersona) {
         this.ventanaPersona = ventanaPersona;
+        this.ventanaIni = ventanaPersona.getVentanaIni();
 
         setTitle("Agregar Persona");
-        setSize(400, 300);
-        setLayout(new GridLayout(5, 2, 10, 10));
+        setSize(500, 300);
+        setLayout(new BorderLayout(15, 15));
         setLocationRelativeTo(null);
+        setBackground(new Color(245, 250, 255));
 
-        // Campos
-        add(new Label("Nombre:"));
-        campoNombre = new TextField();
-        add(campoNombre);
+        Label lblTitulo = new Label("Seleccione el tipo de persona a registrar", Label.CENTER);
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+        lblTitulo.setForeground(new Color(30, 30, 30));
 
-        add(new Label("Cédula:"));
-        campoCedula = new TextField();
-        add(campoCedula);
+        Panel panelTitulo = new Panel(new FlowLayout(FlowLayout.CENTER));
+        panelTitulo.setBackground(new Color(230, 240, 255));
+        panelTitulo.add(lblTitulo);
 
-        add(new Label("Tipo:"));
-        tipoPersona = new Choice();
-        tipoPersona.add("Empleado");
-        tipoPersona.add("Proveedor");
-        add(tipoPersona);
+        btnEmpleado = crearBoton("Registrar Empleado");
+        btnProveedor = crearBoton("Registrar Proveedor");
+        btnAtras = crearBoton("Atrás");
 
-        botonGuardar = new Button("Guardar");
-        botonAtras = new Button("Atras");
-        add(botonGuardar);
-        add(botonAtras);
+        Panel panelBotones = new Panel(new FlowLayout(FlowLayout.CENTER, 40, 20));
+        panelBotones.setBackground(new Color(245, 250, 255));
+        panelBotones.add(btnEmpleado);
+        panelBotones.add(btnProveedor);
 
-        // Acción del botón Guardar
-        botonGuardar.addActionListener(new ActionListener() {
+        Panel panelInferior = new Panel(new FlowLayout(FlowLayout.CENTER));
+        panelInferior.setBackground(new Color(230, 240, 255));
+        panelInferior.add(btnAtras);
+
+        add(panelTitulo, BorderLayout.NORTH);
+        add(panelBotones, BorderLayout.CENTER);
+        add(panelInferior, BorderLayout.SOUTH);
+
+        btnEmpleado.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nombre = campoNombre.getText();
-                String cedula = campoCedula.getText();
-                String tipo = tipoPersona.getSelectedItem();
-
-                if (nombre.isEmpty() || cedula.isEmpty()) {
-                    System.out.println("Faltan datos");
-                    return;
-                }
-
-                Persona nuevaPersona = new Persona(nombre, cedula);
-
-                if (tipo.equals("Empleado")) {
-                    ventanaPersona.getVentanaIni().listaEmpleados.add(nuevaPersona);
-                    System.out.println("Empleado registrado");
-                } else {
-                    ventanaPersona.getVentanaIni().listaProveedores.add(nuevaPersona);
-                    System.out.println("Proveedor registrado");
-                }
-
-                campoNombre.setText("");
-                campoCedula.setText("");
+                VentanaEmpleado ventanaEmpleado = new VentanaEmpleado(VentanaAgregarPersona.this, ventanaIni);
+                ventanaEmpleado.setVisible(true);
+                setVisible(false);
             }
         });
 
-        botonAtras.addActionListener(new ActionListener() {
+        btnProveedor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                VentanaProveedor ventanaProveedor = new VentanaProveedor(VentanaAgregarPersona.this, ventanaIni);
+                ventanaProveedor.setVisible(true);
+                setVisible(false);
+            }
+        });
+
+        btnAtras.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ventanaPersona.setVisible(true);
@@ -83,10 +78,18 @@ public class VentanaAgregarPersona extends Frame {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 dispose();
-                System.exit(0);
             }
         });
 
         setVisible(false);
+    }
+
+    private Button crearBoton(String texto) {
+        Button boton = new Button(texto);
+        boton.setFont(new Font("Arial", Font.BOLD, 16));
+        boton.setBackground(new Color(180, 210, 255));
+        boton.setForeground(Color.BLACK);
+        boton.setPreferredSize(new Dimension(180, 40));
+        return boton;
     }
 }
